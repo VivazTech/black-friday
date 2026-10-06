@@ -1,0 +1,12 @@
+/* Ajustes exigidos pela migração para Next. O layout do designer fica em styles.css e em public/css/sales.css. */
+
+/* next/image grava width/height no <img>; sem isto a altura fixa distorce imagens só com largura no CSS. */
+img{height:auto}
+
+/* O seletor de idioma virou link entre rotas (/ e /es); repete o visual de `.lang button`. */
+.lang a{display:grid;place-items:center;border-radius:20px;width:34px;height:30px;font-size:11px;font-weight:700;color:#fff}
+.lang a.active{background:#fff;color:#111}
+@media(max-width:700px){.lang a{width:26px;height:26px;font-size:9px}}
+
+/* Campo isca contra robôs no formulário de cadastro. */
+.signup-trap{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
