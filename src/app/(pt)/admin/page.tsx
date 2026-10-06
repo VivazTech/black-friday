@@ -44,7 +44,7 @@ export default async function AdminPage() {
       <div className={styles.card}>
         <h1>Página principal</h1>
         <p className={styles.lead}>
-          Escolha o que aparece em promo.vivazcataratas.com.br/black-friday (e em /es).
+          Escolha o que aparece em ofertas.vivazcataratas.com.br/black-friday (e em /es).
         </p>
         {!sheetsConfigured && (
           <p className={styles.warning}>
