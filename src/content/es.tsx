@@ -219,11 +219,11 @@ export const es: Content = {
       "Los comentarios de los huéspedes destacan la estructura, la gastronomía y la atención como puntos memorables de la estadía.",
     items: [
       {
-        text: "“Aprovechamos el Black Friday del Vivaz y fue una elección excelente. Conseguimos una condición muy buena para viajar en familia y la experiencia superó nuestras expectativas. Hotel hermoso, equipo atento y muchas opciones para los niños.”",
-        author: "@Isabelle Fontaine",
+        text: "“Ya me hospedé en el Vivaz Cataratas varias veces y siempre es una experiencia maravillosa. Aproveché una de las estadías con la promoción de Black Friday y puedo decir que vale mucho la pena por la excelente relación costo-beneficio. El ambiente es tranquilo, acogedor y perfecto para descansar y disfrutar momentos especiales, en familia o con amigos. Además de toda la estructura del resort, nos encantó la sala de juegos, con máquinas de arcade, mesa de billar, futbolín, PlayStation y varias opciones de diversión.\nEs ese lugar en el que realmente logramos bajar el ritmo, disfrutar y crear buenos recuerdos juntos. Sin duda, volveremos.”",
+        author: "@Regina Costa",
       },
       {
-        text: "“Viviendo en la región, elijo el Vivaz Cataratas Resort para descansar. Sus habitaciones son cómodas y el desayuno es maravilloso. Me encanta pasar el fin de semana relajándome en la piscina climatizada o, en los días de calor, en la piscina normal, disfrutando del jacuzzi y del área de ocio sin apuro.”",
+        text: "“Viviendo en la región, elijo el Vivaz Cataratas Resort para descansar. Sus habitaciones son cómodas y el desayuno es maravilloso. Me encanta pasar el fin de semana relajándome en la piscina climatizada o, en los días de calor, en la piscina normal, disfrutando del jacuzzi y del área de ocio sin apuro. Es el lugar perfecto para desconectar, recargar las energías y sentirme en casa, con toda la comodidad y tranquilidad que busco.”",
         author: "@Gilberto Brum",
       },
     ],

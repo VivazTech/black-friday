@@ -215,11 +215,11 @@ export const pt: Content = {
       "Comentários de hóspedes destacam a estrutura, a gastronomia e o atendimento como pontos marcantes da estadia.",
     items: [
       {
-        text: "“Aproveitamos a Black Friday do Vivaz e foi uma escolha excelente. Conseguimos uma condição muito boa para viajar em família e a experiência superou nossas expectativas. Hotel lindo, equipe atenciosa e muitas opções para as crianças.”",
-        author: "@Isabelle Fontaine",
+        text: "“Já me hospedei no Vivaz Cataratas várias vezes e é sempre uma experiência maravilhosa! Aproveitei uma das hospedagens pela promoção de Black Friday e posso dizer que vale muito a pena pelo excelente custo-benefício. O ambiente é tranquilo, acolhedor e perfeito para descansar e curtir momentos especiais, seja em família ou com amigos. Além de toda a estrutura do resort, adoramos a sala de jogos, com fliperamas, mesa de sinuca, pebolim, PlayStation e várias opções de diversão.\nÉ aquele lugar onde conseguimos realmente desacelerar, aproveitar e criar boas lembranças juntos. Com certeza, voltaremos!”",
+        author: "@Regina Costa",
       },
       {
-        text: "“Morando na região, eu escolho o Vivaz Cataratas Resort para descanso. Seus quartos são confortáveis e o café da manhã é maravilhoso. Adoro passar o final de semana relaxando na piscina aquecida ou, nos dias de calor, na piscina normal, curtindo a jacuzzi e a área de lazer sem pressa.”",
+        text: "“Morando na região, eu escolho o Vivaz Cataratas Resort para descanso. Seus quartos são confortáveis e o café da manhã é maravilhoso. Adoro passar o final de semana relaxando na piscina aquecida ou, nos dias de calor, na piscina normal, curtindo a jacuzzi e a área de lazer sem pressa. É o lugar perfeito para desligar, recarregar as energias e se sentir em casa, com todo o conforto e tranquilidade que procuro.”",
         author: "@Gilberto Brum",
       },
     ],

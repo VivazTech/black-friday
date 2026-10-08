@@ -72,9 +72,7 @@ export async function AquaSection({ locale, variant }: SectionProps) {
         />
       </div>
       <div className="aqua-copy">
-        <div className="ticket-icon" aria-hidden="true">
-          ♧
-        </div>
+        <div className="ticket-icon" aria-hidden="true" />
         <h2 id="aqua-title">{t.aqua.title}</h2>
         <p>{sales ? t.aqua.textSales : t.aqua.textPreSale}</p>
         <a className="button button-white" href={sales ? "#calendario" : "#cadastro"}>
@@ -179,6 +177,9 @@ function phoneHref(phone: string) {
   return `tel:+${digits}`;
 }
 
+const PRIVACY_HREF = "https://vivazcataratas.com.br/politica-de-privacidade/";
+const TERMS_HREF = "https://vivazcataratas.com.br/termos-e-condicoes/";
+
 export async function Footer({ locale }: { locale: Locale }) {
   const fallback = getContent(locale).footer;
   const campaign = await getCampaign();
@@ -191,9 +192,9 @@ export async function Footer({ locale }: { locale: Locale }) {
         about: custom.aboutLabel,
         aboutHref: custom.aboutHref || "#experiencias",
         privacy: custom.privacyLabel,
-        privacyHref: custom.privacyHref,
+        privacyHref: custom.privacyHref || PRIVACY_HREF,
         terms: custom.termsLabel,
-        termsHref: custom.termsHref,
+        termsHref: custom.termsHref || TERMS_HREF,
         contacts: custom.contactsTitle,
         phones: lines(custom.phones),
         address: custom.address,
@@ -207,9 +208,9 @@ export async function Footer({ locale }: { locale: Locale }) {
         about: fallback.about,
         aboutHref: "#experiencias",
         privacy: fallback.privacy,
-        privacyHref: "",
+        privacyHref: PRIVACY_HREF,
         terms: fallback.terms,
-        termsHref: "",
+        termsHref: TERMS_HREF,
         contacts: fallback.contacts,
         phones: ["+55 (45) 99836-0304", "+55 (45) 3026-0470", "0800 45 1221"],
         address: fallback.address,

@@ -1,5 +1,5 @@
 import Image, { getImageProps } from "next/image";
-import heroDesktop from "@/assets/hero-desktop.webp";
+import heroDesktop from "@/assets/hero-desktop.jpg";
 import heroMobile from "@/assets/hero-mobile.webp";
 import badgeAnimated from "@/assets/selo-black-friday-animado.webp";
 import badgeStatic from "@/assets/selo-black-friday.webp";
