@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getContent, localePath, type Locale } from "@/content";
-import { getSiteMode } from "@/lib/sheets";
+import { getLivePage } from "@/lib/campaign";
 import { BASE_PATH } from "@/lib/site";
 import PreSalePage from "./PreSalePage";
 import SalesPage from "./SalesPage";
@@ -11,13 +11,13 @@ const languages = (page: PageKey) => ({ "pt-BR": url("pt", page), es: url("es", 
 
 /** Página principal: mostra a pré-venda ou as vendas conforme o painel admin. */
 export async function HomePage({ locale }: { locale: Locale }) {
-  if ((await getSiteMode()) === "vendas-abertas") return <SalesPage locale={locale} route="home" />;
+  if ((await getLivePage()) === "vendas-abertas") return <SalesPage locale={locale} route="home" />;
   return <PreSalePage locale={locale} />;
 }
 
 export async function homeMetadata(locale: Locale): Promise<Metadata> {
   const meta = getContent(locale).meta;
-  const sales = (await getSiteMode()) === "vendas-abertas";
+  const sales = (await getLivePage()) === "vendas-abertas";
   return {
     ...(sales ? meta.sales : meta.preSale),
     alternates: { canonical: url(locale, "home"), languages: languages("home") },

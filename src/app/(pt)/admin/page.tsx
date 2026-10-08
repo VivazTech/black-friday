@@ -1,24 +1,26 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { adminConfigured, isAdmin } from "@/lib/auth";
-import { getSiteMode, sheetsConfigured } from "@/lib/sheets";
-import { LoginForm, ModeForm } from "./AdminForms";
-import { logout } from "./actions";
+import { getCampaign, listLeads } from "@/lib/campaign";
+import type { LeadRow } from "@/lib/schedule";
+import { LoginForm } from "./AdminForms";
+import { AdminShell } from "./ui/AdminShell";
 import styles from "./admin.module.css";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Painel | Black Friday Vivaz Cataratas",
   robots: { index: false, follow: false },
 };
 
-export default async function AdminPage() {
+export default async function AdminPage({ searchParams }: { searchParams: Promise<{ secao?: string }> }) {
   if (!adminConfigured()) {
     return (
       <main className={styles.page}>
         <div className={styles.card}>
           <h1>Painel indisponível</h1>
           <p className={styles.lead}>
-            Defina a variável de ambiente ADMIN_PASSWORD (mínimo de 8 caracteres) para ativar o painel.
+            Defina SUPABASE_URL e SUPABASE_PUBLISHABLE_KEY para ativar o painel.
           </p>
         </div>
       </main>
@@ -30,41 +32,23 @@ export default async function AdminPage() {
       <main className={styles.page}>
         <div className={styles.card}>
           <h1>Painel Black Friday</h1>
-          <p className={styles.lead}>Entre para escolher a página que fica no endereço principal.</p>
+          <p className={styles.lead}>Entre com o e-mail cadastrado no Supabase.</p>
           <LoginForm />
         </div>
       </main>
     );
   }
 
-  const mode = await getSiteMode();
+  const params = await searchParams;
+  const campaign = await getCampaign();
+  let leads: LeadRow[] = [];
+  if (campaign.source === "database") {
+    try {
+      leads = await listLeads();
+    } catch (error) {
+      console.error("Falha ao listar cadastros:", error);
+    }
+  }
 
-  return (
-    <main className={styles.page}>
-      <div className={styles.card}>
-        <h1>Página principal</h1>
-        <p className={styles.lead}>
-          Escolha o que aparece em ofertas.vivazcataratas.com.br/black-friday (e em /es).
-        </p>
-        {!sheetsConfigured && (
-          <p className={styles.warning}>
-            Planilha não configurada: a escolha fica salva só neste servidor e os cadastros não são
-            enviados ao Google Sheets.
-          </p>
-        )}
-        <ModeForm current={mode} />
-        <div className={styles.links}>
-          <Link href="/" target="_blank">
-            Ver página principal
-          </Link>
-          <Link href="/vendas-abertas" target="_blank">
-            Ver vendas abertas
-          </Link>
-          <form action={logout} className={styles.logout}>
-            <button type="submit">Sair</button>
-          </form>
-        </div>
-      </div>
-    </main>
-  );
+  return <AdminShell initialSection={params.secao ?? "visao"} campaign={campaign} leads={leads} />;
 }

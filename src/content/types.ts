@@ -60,6 +60,8 @@ export interface Content {
     note: string;
     sending: string;
     success: string;
+    thanksTitle: string;
+    community: string;
     errorRequired: string;
     errorWhatsapp: string;
     errorServer: string;

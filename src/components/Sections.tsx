@@ -1,9 +1,12 @@
+import { Fragment } from "react";
 import Image from "next/image";
 import aquaPoster from "@/assets/aqua-poster.webp";
 import footerLogo from "@/assets/footer-logo.png";
 import promoPoster from "@/assets/promo-poster.webp";
+import promoPosterMobile from "@/assets/promo-poster-mobile.webp";
 import { getContent, type Locale } from "@/content";
-import { BASE_PATH } from "@/lib/site";
+import { getCampaign } from "@/lib/campaign";
+import { DEFAULT_AQUA_VIDEO, DEFAULT_PROMO_VIDEO, DEFAULT_PROMO_VIDEO_MOBILE, mediaUrl } from "@/lib/media";
 import { LoopVideo, PromoVideo } from "./Videos";
 
 type Variant = "preSale" | "sales";
@@ -12,8 +15,14 @@ interface SectionProps {
   variant: Variant;
 }
 
-export function HowSection({ locale }: { locale: Locale }) {
+export async function HowSection({ locale }: { locale: Locale }) {
   const t = getContent(locale).how;
+  const { settings } = await getCampaign();
+  const storedVideo = settings.promoVideoUrl.trim();
+  const customVideo =
+    storedVideo.length > 0 && storedVideo !== "/videos/black-friday-15s.mp4" && storedVideo !== DEFAULT_PROMO_VIDEO;
+  const customPoster = settings.promoPosterUrl.trim().length > 0;
+  const poster = customPoster ? mediaUrl(settings.promoPosterUrl) : promoPoster.src;
 
   return (
     <section className="how-section" id="como-funciona" aria-labelledby="how-title">
@@ -23,8 +32,10 @@ export function HowSection({ locale }: { locale: Locale }) {
         <p className="section-intro">{t.intro}</p>
         <div className="how-grid">
           <PromoVideo
-            src={`${BASE_PATH}/videos/black-friday-15s.mp4`}
-            poster={promoPoster.src}
+            src={customVideo ? mediaUrl(storedVideo) : mediaUrl(DEFAULT_PROMO_VIDEO)}
+            srcMobile={customVideo ? undefined : mediaUrl(DEFAULT_PROMO_VIDEO_MOBILE)}
+            poster={poster}
+            posterMobile={customPoster ? undefined : promoPosterMobile.src}
             label={t.videoLabel}
             playLabel={t.playLabel}
             fallback={t.videoFallback}
@@ -44,16 +55,18 @@ export function HowSection({ locale }: { locale: Locale }) {
   );
 }
 
-export function AquaSection({ locale, variant }: SectionProps) {
+export async function AquaSection({ locale, variant }: SectionProps) {
   const t = getContent(locale);
   const sales = variant === "sales";
+  const { settings } = await getCampaign();
+  const poster = settings.aquaPosterUrl ? mediaUrl(settings.aquaPosterUrl) : aquaPoster.src;
 
   return (
     <section className="aqua-section" aria-labelledby="aqua-title">
       <div className="aqua-image">
         <LoopVideo
-          src={`${BASE_PATH}/videos/aquafoz-compilado.mp4`}
-          poster={aquaPoster.src}
+          src={mediaUrl(settings.aquaVideoUrl, DEFAULT_AQUA_VIDEO)}
+          poster={poster}
           label={t.aqua.videoLabel}
           fallback={t.how.videoFallback}
         />
@@ -94,9 +107,14 @@ export function Reviews({ locale }: { locale: Locale }) {
   );
 }
 
-export function FaqSection({ locale, variant }: SectionProps) {
+export async function FaqSection({ locale, variant }: SectionProps) {
   const t = getContent(locale).faq;
   const sales = variant === "sales";
+  const campaign = await getCampaign();
+  const fromDatabase = campaign.faqs.filter(
+    (item) => item.locale === locale && item.variant === (sales ? "vendas-abertas" : "pre-venda"),
+  );
+  const items = campaign.source === "database" ? fromDatabase : sales ? t.sales : t.preSale;
 
   return (
     <section className="faq-section" id="duvidas" aria-labelledby="faq-title">
@@ -107,7 +125,7 @@ export function FaqSection({ locale, variant }: SectionProps) {
           <p>{sales ? t.introSales : t.introPreSale}</p>
         </div>
         <div className="faq-list">
-          {(sales ? t.sales : t.preSale).map((item, index) => (
+          {items.map((item, index) => (
             <details key={item.question} open={index === 0}>
               <summary>{item.question}</summary>
               <p>{item.answer}</p>
@@ -151,8 +169,53 @@ export function FinalCta({ locale, variant }: SectionProps) {
   );
 }
 
-export function Footer({ locale }: { locale: Locale }) {
-  const t = getContent(locale).footer;
+function lines(text: string) {
+  return text.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+}
+
+function phoneHref(phone: string) {
+  const digits = phone.replace(/\D/g, "");
+  if (digits.startsWith("0800")) return `tel:${digits}`;
+  return `tel:+${digits}`;
+}
+
+export async function Footer({ locale }: { locale: Locale }) {
+  const fallback = getContent(locale).footer;
+  const campaign = await getCampaign();
+  const custom = campaign.source === "database" ? campaign.footers.find((item) => item.locale === locale) : undefined;
+  const t = custom
+    ? {
+        logoAlt: custom.logoAlt,
+        tagline: custom.tagline,
+        resort: custom.resortTitle,
+        about: custom.aboutLabel,
+        aboutHref: custom.aboutHref || "#experiencias",
+        privacy: custom.privacyLabel,
+        privacyHref: custom.privacyHref,
+        terms: custom.termsLabel,
+        termsHref: custom.termsHref,
+        contacts: custom.contactsTitle,
+        phones: lines(custom.phones),
+        address: custom.address,
+        service: custom.serviceTitle,
+        hours: lines(custom.hours),
+      }
+    : {
+        logoAlt: fallback.logoAlt,
+        tagline: fallback.tagline,
+        resort: fallback.resort,
+        about: fallback.about,
+        aboutHref: "#experiencias",
+        privacy: fallback.privacy,
+        privacyHref: "",
+        terms: fallback.terms,
+        termsHref: "",
+        contacts: fallback.contacts,
+        phones: ["+55 (45) 99836-0304", "+55 (45) 3026-0470", "0800 45 1221"],
+        address: fallback.address,
+        service: fallback.service,
+        hours: [] as string[],
+      };
 
   return (
     <footer id="contato">
@@ -163,20 +226,31 @@ export function Footer({ locale }: { locale: Locale }) {
         </div>
         <div>
           <h3>{t.resort}</h3>
-          <a href="#experiencias">{t.about}</a>
-          <span>{t.privacy}</span>
-          <span>{t.terms}</span>
+          <a href={t.aboutHref}>{t.about}</a>
+          {t.privacyHref ? <a href={t.privacyHref}>{t.privacy}</a> : <span>{t.privacy}</span>}
+          {t.termsHref ? <a href={t.termsHref}>{t.terms}</a> : <span>{t.terms}</span>}
         </div>
         <div>
           <h3>{t.contacts}</h3>
-          <a href="tel:+5545998360304">+55 (45) 99836-0304</a>
-          <a href="tel:+554530260470">+55 (45) 3026-0470</a>
-          <a href="tel:0800451221">0800 45 1221</a>
+          {t.phones.map((phone) => (
+            <a key={phone} href={phoneHref(phone)}>
+              {phone}
+            </a>
+          ))}
           <p>{t.address}</p>
         </div>
         <div>
           <h3>{t.service}</h3>
-          <p>{t.hours}</p>
+          <p>
+            {custom
+              ? t.hours.map((line, index) => (
+                <Fragment key={`${index}-${line}`}>
+                    {index > 0 && <br />}
+                    {line}
+                  </Fragment>
+                ))
+              : fallback.hours}
+          </p>
         </div>
       </div>
     </footer>

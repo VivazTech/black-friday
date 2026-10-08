@@ -2,7 +2,6 @@
 
 import { Fragment, useSyncExternalStore } from "react";
 import { getContent, type Locale } from "@/content";
-import { CAMPAIGN_END, CAMPAIGN_START } from "@/lib/site";
 
 function subscribe(onTick: () => void) {
   const timer = setInterval(onTick, 1000);
@@ -11,12 +10,22 @@ function subscribe(onTick: () => void) {
 const currentSecond = () => Math.floor(Date.now() / 1000);
 const noSecond = () => null;
 
-export function Countdown({ locale, variant }: { locale: Locale; variant: "preSale" | "sales" }) {
+export function Countdown({
+  locale,
+  variant,
+  opening,
+  closing,
+}: {
+  locale: Locale;
+  variant: "preSale" | "sales";
+  opening: number;
+  closing: number;
+}) {
   const t = getContent(locale).countdown;
   // No servidor não há relógio do visitante; os números aparecem após a hidratação.
   const now = useSyncExternalStore(subscribe, currentSecond, noSecond);
-  const beforeSales = now === null || now * 1000 < CAMPAIGN_START;
-  const target = variant === "preSale" || beforeSales ? CAMPAIGN_START : CAMPAIGN_END;
+  const beforeSales = now === null || now * 1000 < opening;
+  const target = variant === "preSale" || beforeSales ? opening : closing;
 
   let parts = ["--", "--", "--", "--"];
   if (now !== null) {
@@ -31,12 +40,12 @@ export function Countdown({ locale, variant }: { locale: Locale; variant: "preSa
   }
 
   const label = variant === "preSale" ? t.preSaleLabel : beforeSales ? t.beforeSales : t.untilEnd;
-  const closing = variant === "sales" && !beforeSales;
+  const isClosing = variant === "sales" && !beforeSales;
 
   return (
     <div className="countdown">
       <span className="countdown-label">{label}</span>
-      <div className="clock" aria-label={closing ? t.ariaClosing : t.ariaOpening}>
+      <div className="clock" aria-label={isClosing ? t.ariaClosing : t.ariaOpening}>
         {parts.map((value, index) => (
           <Fragment key={t.units[index]}>
             {index > 0 && <i>·</i>}

@@ -13,8 +13,12 @@
 .current{display:inline-block;margin-left:8px;padding:3px 9px;border-radius:20px;background:var(--yellow);font-size:11px;font-weight:800;vertical-align:middle}
 .message{min-height:20px;margin:16px 0 0;font-size:14px;color:#147851}
 .error{color:#b22d1d}
-.warning{margin:0 0 22px;padding:12px 14px;border-radius:10px;background:#fff3cd;font-size:14px;line-height:1.4}
 .links{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-top:26px;padding-top:20px;border-top:1px solid #e5e8e4;font-size:14px}
 .links a{text-decoration:underline}
-.logout{margin-left:auto}
-.logout button{border:0;padding:0;background:none;font-size:14px;text-decoration:underline}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:-6px 0 18px;font-size:14px}
+.row label{display:flex;align-items:center;gap:8px;font-weight:600;margin:0}
+.check{width:16px;height:16px;margin:0;accent-color:var(--ink)}
+.card :global(.button){width:100%}
+.linkish{display:block;width:fit-content;margin:12px auto 0;border:0;background:none;padding:8px 0;color:var(--ink);font-size:14px;font-weight:700;text-decoration:underline;cursor:pointer}
+.row .linkish{width:auto;margin:0}
+.support{display:flex;justify-content:center;align-items:center;width:100%;min-height:48px;margin-top:14px;border:1px solid #cfd6d0;border-radius:8px;font-weight:800;background:#fff}

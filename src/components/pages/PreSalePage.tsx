@@ -1,5 +1,6 @@
 import type { Locale } from "@/content";
 import { getContent } from "@/content";
+import { getCampaign } from "@/lib/campaign";
 import { PatternStrip } from "../Badges";
 import { Gallery } from "../Gallery";
 import { PreSaleHero } from "../Hero";
@@ -7,7 +8,10 @@ import { AquaSection, FaqSection, FinalCta, Footer, HowSection, Reviews } from "
 import { SignupSection } from "../Signup";
 
 /** Página de pré-venda: cadastro para acesso antecipado. */
-export default function PreSalePage({ locale }: { locale: Locale }) {
+export default async function PreSalePage({ locale }: { locale: Locale }) {
+  const { settings } = await getCampaign();
+  const communityHref = locale === "es" ? settings.whatsappCommunityEs : settings.whatsappCommunityPt;
+
   return (
     <>
       <a className="skip-link" href="#conteudo">
@@ -15,7 +19,7 @@ export default function PreSalePage({ locale }: { locale: Locale }) {
       </a>
       <main id="conteudo">
         <PreSaleHero locale={locale} />
-        <SignupSection locale={locale} />
+        <SignupSection locale={locale} communityHref={communityHref} />
         <PatternStrip />
         <HowSection locale={locale} />
         <PatternStrip />

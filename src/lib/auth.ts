@@ -1,46 +1,42 @@
 import "server-only";
-import { createHmac, timingSafeEqual } from "node:crypto";
+
 import { cookies } from "next/headers";
 import { BASE_PATH } from "./site";
+import { createAuthClient } from "./supabase/server";
 
-const COOKIE = "bf_admin";
-const SESSION_HOURS = 8;
-const password = () => process.env.ADMIN_PASSWORD ?? "";
-
-export const adminConfigured = () => password().length >= 8;
-
-const sign = (expires: string) => createHmac("sha256", password()).update(expires).digest("hex");
-
-function safeEqual(a: string, b: string) {
-  const first = Buffer.from(a);
-  const second = Buffer.from(b);
-  return first.length === second.length && timingSafeEqual(first, second);
-}
-
-export function passwordMatches(candidate: string) {
-  // Compara os hashes para não revelar o tamanho da senha pelo tempo de resposta.
-  const hash = (value: string) => createHmac("sha256", "bf-admin").update(value).digest("hex");
-  return adminConfigured() && safeEqual(hash(candidate), hash(password()));
-}
+export const adminConfigured = () => Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_PUBLISHABLE_KEY);
 
 export async function isAdmin() {
   if (!adminConfigured()) return false;
-  const [expires, signature] = ((await cookies()).get(COOKIE)?.value ?? "").split(".");
-  if (!expires || !signature || Number(expires) < Date.now()) return false;
-  return safeEqual(signature, sign(expires));
+  try {
+    const supabase = await createAuthClient();
+    const { data, error } = await supabase.auth.getClaims();
+    return !error && Boolean(data?.claims?.sub);
+  } catch {
+    return false;
+  }
 }
 
-export async function startSession() {
-  const expires = String(Date.now() + SESSION_HOURS * 3600 * 1000);
-  (await cookies()).set(COOKIE, `${expires}.${sign(expires)}`, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    path: `${BASE_PATH}/admin`,
-    maxAge: SESSION_HOURS * 3600,
-  });
+export async function signIn(email: string, password: string, remember: boolean) {
+  const supabase = await createAuthClient(remember);
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) throw error;
+  await clearLegacyCookie();
 }
 
-export async function endSession() {
-  (await cookies()).set(COOKIE, "", { path: `${BASE_PATH}/admin`, maxAge: 0 });
+export async function signOut() {
+  try {
+    const supabase = await createAuthClient();
+    await supabase.auth.signOut();
+  } finally {
+    await clearLegacyCookie();
+  }
+}
+
+async function clearLegacyCookie() {
+  try {
+    (await cookies()).set("bf_admin", "", { path: `${BASE_PATH}/admin`, maxAge: 0 });
+  } catch {
+    // A leitura da sessão em Server Component não precisa apagar o cookie antigo.
+  }
 }

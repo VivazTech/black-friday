@@ -1,7 +1,8 @@
 "use server";
 
+import { insertLead, supabaseConfigured } from "@/lib/campaign";
 import { isValidWhatsapp } from "@/lib/phone";
-import { appendLead } from "@/lib/sheets";
+import { appendLead, sheetsConfigured } from "@/lib/sheets";
 
 export interface LeadInput {
   nome: string;
@@ -42,10 +43,20 @@ export async function submitLead(input: LeadInput): Promise<LeadResult> {
   if (!valid) return { ok: false, error: "invalid" };
 
   try {
-    await appendLead(lead);
+    if (supabaseConfigured) await insertLead(lead);
+    if (sheetsConfigured) {
+      try {
+        await appendLead(lead);
+      } catch (error) {
+        console.error("Falha ao gravar cadastro na planilha:", error);
+        if (!supabaseConfigured) throw error;
+      }
+    } else if (!supabaseConfigured) {
+      await appendLead(lead);
+    }
     return { ok: true };
   } catch (error) {
-    console.error("Falha ao gravar cadastro na planilha:", error);
+    console.error("Falha ao gravar cadastro:", error);
     return { ok: false, error: "server" };
   }
 }

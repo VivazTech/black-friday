@@ -1,30 +1,10 @@
 "use client";
 
-import Image, { type StaticImageData } from "next/image";
+import Image from "next/image";
 import { useEffect, useRef, useState, type PointerEvent } from "react";
-import destinationAlt from "@/assets/gallery-destination-alt.webp";
-import destination from "@/assets/gallery-destination.webp";
-import diningAlt from "@/assets/gallery-dining-alt.webp";
-import dining from "@/assets/gallery-dining.webp";
-import heatedAlt from "@/assets/gallery-heated-alt.webp";
-import heated from "@/assets/gallery-heated.webp";
-import outdoorAlt from "@/assets/gallery-outdoor-alt.webp";
-import outdoor from "@/assets/gallery-outdoor.webp";
-import roomAlt from "@/assets/gallery-room-alt.webp";
-import room from "@/assets/gallery-room.webp";
-import waterparkAlt from "@/assets/gallery-waterpark-alt.webp";
-import waterpark from "@/assets/gallery-waterpark.webp";
+import { galleryPhotos } from "@/content/gallery-photos";
 import { getContent, type Locale } from "@/content";
 
-// Mesma ordem dos cards no conteúdo: [foto principal, foto alternativa].
-const photos: [StaticImageData, StaticImageData][] = [
-  [heated, heatedAlt],
-  [outdoor, outdoorAlt],
-  [waterpark, waterparkAlt],
-  [room, roomAlt],
-  [destination, destinationAlt],
-  [dining, diningAlt],
-];
 const photoSizes = "(max-width: 700px) 80vw, (max-width: 1050px) 45vw, 25vw";
 
 function cardStep(track: HTMLDivElement) {
@@ -36,9 +16,11 @@ function cardStep(track: HTMLDivElement) {
 function GalleryCard({ locale, index }: { locale: Locale; index: number }) {
   const t = getContent(locale).gallery;
   const card = t.cards[index];
+  const slides = galleryPhotos[index];
   const [active, setActive] = useState(0);
   const startX = useRef<number | null>(null);
-  const showPhoto = (direction: number) => setActive((current) => (current + direction + 2) % 2);
+  const showPhoto = (direction: number) =>
+    setActive((current) => (current + direction + slides.length) % slides.length);
 
   const onPointerDown = (event: PointerEvent<HTMLDivElement>) => {
     startX.current = event.clientX;
@@ -61,7 +43,7 @@ function GalleryCard({ locale, index }: { locale: Locale; index: number }) {
           startX.current = null;
         }}
       >
-        {photos[index].map((photo, photoIndex) => (
+        {slides.map((photo, photoIndex) => (
           <Image
             key={photoIndex}
             src={photo}

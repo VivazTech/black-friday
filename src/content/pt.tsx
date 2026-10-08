@@ -1,3 +1,4 @@
+import { ptFaqs } from "./faq-items";
 import type { Content } from "./types";
 
 export const pt: Content = {
@@ -117,7 +118,9 @@ export const pt: Content = {
       "Aceito receber comunicações sobre promoções, novidades e ofertas do Vivaz Cataratas, conforme a Política de Privacidade.",
     note: "Sem spam. Você pode sair da lista quando quiser.",
     sending: "ENVIANDO...",
-    success: "Cadastro realizado com sucesso! Seu acesso antecipado está garantido.",
+    success: "Seu acesso antecipado está garantido.",
+    thanksTitle: "Obrigado!",
+    community: "ENTRAR NA COMUNIDADE",
     errorRequired: "Confira os campos obrigatórios e aceite os termos.",
     errorWhatsapp: "Informe um WhatsApp válido.",
     errorServer: "Não foi possível enviar seu cadastro agora. Tente novamente em instantes.",
@@ -190,12 +193,15 @@ export const pt: Content = {
       },
       { title: "Parque Aquático", text: "Aquamania incluso na estadia", alt: "Parque aquático" },
       { title: "Acomodações", text: "Opções para você e sua família", alt: "Acomodações do resort" },
+      { title: "Allegro", text: "O restaurante do resort.", alt: "Restaurante Allegro" },
+      { title: "Spa", text: "Massagens e momentos de cuidado.", alt: "Spa Vivaz Cataratas" },
+      { title: "La Terrazza", text: "Sabores intensos e pratos refinados.", alt: "Gastronomia La Terrazza" },
+      { title: "Natureza", text: "Trilhas e paisagens ao redor do resort.", alt: "Natureza ao redor do resort" },
       {
         title: "Destino",
         text: "Localizado a 10 minutos das Cataratas do Iguaçu",
         alt: "Destino Cataratas do Iguaçu",
       },
-      { title: "La Terrazza", text: "Sabores intensos e pratos refinados.", alt: "Gastronomia La Terrazza" },
     ],
   },
   reviews: {
@@ -229,79 +235,8 @@ export const pt: Content = {
     ),
     introPreSale: "As regras mais importantes ficam acessíveis antes do cadastro e antes da reserva.",
     introSales: "Consulte as regras antes de escolher suas datas e acomodação.",
-    preSale: [
-      {
-        question: "Todos os dias terão 45% de desconto?",
-        answer:
-          "Não. Os percentuais variam de 25% a 45% conforme a data, demanda e disponibilidade. Durante a semana de vendas, o calendário identifica o desconto de cada período.",
-      },
-      {
-        question: "Quando poderei escolher a data da viagem?",
-        answer:
-          "Durante a semana de vendas, de 23 a 29 de novembro, conforme a disponibilidade da campanha.",
-      },
-      {
-        question: "Como funciona a cortesia para crianças?",
-        answer:
-          "A cortesia é válida para até duas crianças, conforme as regras e datas selecionadas da campanha.",
-      },
-      {
-        question: "O Aquamania está incluso?",
-        answer: "O acesso ao Aquamania acompanha a hospedagem durante a temporada de funcionamento.",
-      },
-      {
-        question: "Como funcionam os ingressos infantis?",
-        answer:
-          "Reservas elegíveis incluem dois ingressos infantis para o Aquafoz, para crianças de até 10 anos.",
-      },
-      {
-        question: "O cadastro garante disponibilidade?",
-        answer:
-          "Não. O cadastro dá acesso antecipado às ofertas; tarifas e datas dependem da disponibilidade no momento da reserva.",
-      },
-    ],
-    sales: [
-      {
-        question: "Descontos e disponibilidade",
-        answer:
-          "Os descontos da campanha dependem da data, demanda e disponibilidade. Nesta prévia demonstrativa, os percentuais do calendário são demonstrativos; os dados oficiais serão inseridos antes da publicação comercial.",
-      },
-      {
-        question: "Como participar da promoção?",
-        answer:
-          "Escolha entrada e saída no calendário e informe os hóspedes. Na versão final, você será direcionado ao motor de reservas para consultar acomodações e concluir a reserva.",
-      },
-      {
-        question: "Quando serão as vendas?",
-        answer:
-          "A semana de vendas está prevista para 23 a 29 de novembro de 2026, para estadias selecionadas de janeiro a outubro de 2027.",
-      },
-      {
-        question: "O parque aquático está incluso na reserva?",
-        answer:
-          "O acesso ao Aquamania acompanha a hospedagem durante a temporada de funcionamento, conforme as regras da tarifa escolhida.",
-      },
-      {
-        question: "Posso fazer mais de uma reserva?",
-        answer:
-          "A possibilidade de reservas adicionais dependerá das regras e da disponibilidade da campanha oficial.",
-      },
-      {
-        question: "Onde está o cupom de desconto?",
-        answer:
-          "O percentual promocional é exibido diretamente em cada data do calendário; nesta prévia não há cupom.",
-      },
-      {
-        question: "E se precisar cancelar?",
-        answer:
-          "As condições de cancelamento serão exibidas junto da tarifa oficial antes da confirmação da reserva.",
-      },
-      {
-        question: "Por que não recebi os 45% de desconto?",
-        answer:
-          "Os percentuais variam entre 25% e 45% conforme o período e a disponibilidade. A prévia usa percentuais demonstrativos.",
-      },
-    ],
+    preSale: ptFaqs,
+    sales: ptFaqs,
   },
   finalCta: {
     preSale: {

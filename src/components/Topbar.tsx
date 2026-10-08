@@ -1,5 +1,8 @@
+import Image from "next/image";
 import Link from "next/link";
+import brandLeaf from "@/assets/fav-icon-branco.png";
 import { getContent, localePath, type Locale } from "@/content";
+import { getCampaign } from "@/lib/campaign";
 import { Countdown } from "./Countdown";
 
 interface TopbarProps {
@@ -10,20 +13,23 @@ interface TopbarProps {
   route: "home" | "sales";
 }
 
-export function Topbar({ locale, variant, route }: TopbarProps) {
+export async function Topbar({ locale, variant, route }: TopbarProps) {
   const t = getContent(locale);
   const sales = variant === "sales";
+  const { settings } = await getCampaign();
+  const opening = new Date(settings.countdownStart).getTime();
+  const closing = new Date(settings.countdownEnd).getTime();
 
   return (
     <header className="topbar wrap">
       <a className="brand" href="#inicio" aria-label={t.topbar.brandLabel}>
-        <span className="brand-leaf">◈</span>
+        <Image className="brand-leaf" src={brandLeaf} alt="" priority />
         <span>
           <strong>VIVAZ</strong>
           <small>CATARATAS</small>
         </span>
       </a>
-      <Countdown locale={locale} variant={variant} />
+      <Countdown locale={locale} variant={variant} opening={opening} closing={closing} />
       <div className="header-actions">
         <a className="button button-yellow header-cta" href={sales ? "#calendario" : "#cadastro"}>
           {sales ? t.cta.dates : t.cta.early}
