@@ -2,6 +2,7 @@ import "server-only";
 
 import { cache } from "react";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { sanitizeCalendar } from "./calendar";
 import { CAMPAIGN_END, CAMPAIGN_START, isSiteMode, type SiteMode } from "./site";
 import { getSiteMode as getSheetsMode } from "./sheets";
 import type { Campaign, FaqItem, FooterContent, LeadRow, SiteSettings } from "./schedule";
@@ -35,6 +36,7 @@ function fallbackSettings(): SiteSettings {
     aquaPosterUrl: "",
     whatsappCommunityPt: "",
     whatsappCommunityEs: "",
+    calendar: sanitizeCalendar({}),
     updatedAt: "",
   };
 }
@@ -54,6 +56,7 @@ function mapSettings(row: Record<string, unknown>): SiteSettings {
     aquaPosterUrl: String(row.aqua_poster_url ?? ""),
     whatsappCommunityPt: String(row.whatsapp_community_pt ?? ""),
     whatsappCommunityEs: String(row.whatsapp_community_es ?? ""),
+    calendar: sanitizeCalendar(row.calendar),
     updatedAt: String(row.updated_at ?? ""),
   };
 }
@@ -163,8 +166,31 @@ export async function listLeads(): Promise<LeadRow[]> {
   });
 }
 
+export interface PanelUser {
+  id: string;
+  email: string;
+  createdAt: string;
+  lastSignInAt: string | null;
+  locked: boolean;
+}
+
+export async function listPanelUsers(): Promise<PanelUser[]> {
+  const data = await adminCall("admin_list_users");
+  if (!Array.isArray(data)) return [];
+  return data.map((row) => {
+    const item = row as Record<string, unknown>;
+    return {
+      id: String(item.id),
+      email: String(item.email ?? ""),
+      createdAt: String(item.created_at ?? ""),
+      lastSignInAt: typeof item.last_sign_in_at === "string" ? item.last_sign_in_at : null,
+      locked: item.locked === true,
+    };
+  });
+}
+
 export async function adminCall(
-  fn: "admin_list_leads" | "admin_patch_settings" | "admin_save_footer" | "admin_save_faqs",
+  fn: "admin_list_leads" | "admin_list_users" | "admin_patch_settings" | "admin_save_footer" | "admin_save_faqs" | "admin_save_user" | "admin_delete_user",
   payload?: unknown,
 ) {
   const db = client();

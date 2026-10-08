@@ -18,7 +18,7 @@ import {
 } from "@/lib/schedule";
 import { saveCommunity, saveCountdown, saveFaqs, saveFooter, saveSchedule, saveVideos, type AdminState } from "../actions";
 
-type SectionId = "visao" | "pagina" | "teste" | "contador" | "videos" | "cadastros" | "comunidade" | "duvidas" | "rodape";
+type SectionId = "visao" | "pagina" | "teste" | "contador" | "videos" | "calendario" | "cadastros" | "comunidade" | "duvidas" | "rodape" | "usuarios";
 
 const initial: AdminState = { message: "", error: false, done: false, stamp: 0 };
 
@@ -148,6 +148,12 @@ export function Dashboard({
           </button>
           <button className="btn-secondary" type="button" onClick={() => onOpen("contador")}>
             Ajustar o contador
+          </button>
+          <button className="btn-secondary" type="button" onClick={() => onOpen("usuarios")}>
+            Gerenciar acessos do painel
+          </button>
+          <button className="btn-secondary" type="button" onClick={() => onOpen("calendario")}>
+            Configurar datas e descontos
           </button>
           <Link className="btn-secondary" href="/" target="_blank">
             Abrir a página principal

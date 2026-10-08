@@ -14,10 +14,13 @@ import {
   Moon,
   PanelBottom,
   Sun,
+  CalendarDays,
   Timer,
+  UserCog,
   Users,
   MessageCircle,
 } from "lucide-react";
+import type { PanelUser } from "@/lib/campaign";
 import type { Campaign, LeadRow } from "@/lib/schedule";
 import { logout } from "../actions";
 import {
@@ -31,6 +34,8 @@ import {
   VideosSection,
   CommunitySection,
 } from "./sections";
+import { CalendarSection } from "./CalendarSection";
+import { UsersSection } from "./UsersSection";
 import "../admin-ui.css";
 
 const NAV = [
@@ -39,10 +44,12 @@ const NAV = [
   { id: "teste", title: "Testar troca", icon: Timer },
   { id: "contador", title: "Contador", icon: Clock3 },
   { id: "videos", title: "Vídeos", icon: Clapperboard },
+  { id: "calendario", title: "Calendário", icon: CalendarDays },
   { id: "cadastros", title: "Cadastrados", icon: Users },
   { id: "comunidade", title: "Comunidade", icon: MessageCircle },
   { id: "duvidas", title: "Dúvidas", icon: CircleHelp },
   { id: "rodape", title: "Rodapé", icon: PanelBottom },
+  { id: "usuarios", title: "Usuários", icon: UserCog },
 ] as const;
 
 export type SectionId = (typeof NAV)[number]["id"];
@@ -53,6 +60,10 @@ const COPY: Record<SectionId, { title: string; text: string }> = {
   teste: { title: "Testar troca", text: "Simule um horário para ver qual página estaria no ar, sem alterar o site." },
   contador: { title: "Contador", text: "Datas de abertura e encerramento usadas no relógio do topo." },
   videos: { title: "Vídeos", text: "Vídeo da promoção e vídeo em loop do Aquafoz." },
+  calendario: {
+    title: "Calendário",
+    text: "Período, cupom, descontos de cada data e o link que abre no Niara.",
+  },
   cadastros: { title: "Cadastrados", text: "Pessoas que enviaram o formulário da pré-venda." },
   comunidade: {
     title: "Comunidade",
@@ -60,6 +71,10 @@ const COPY: Record<SectionId, { title: string; text: string }> = {
   },
   duvidas: { title: "Dúvidas frequentes", text: "Perguntas e respostas de cada idioma e de cada página." },
   rodape: { title: "Rodapé", text: "Textos, telefones, endereço e horário de atendimento." },
+  usuarios: {
+    title: "Usuários",
+    text: "Quem pode entrar no painel. A conta principal não pode ser editada.",
+  },
 };
 
 function isSection(value: string): value is SectionId {
@@ -70,10 +85,12 @@ export function AdminShell({
   initialSection,
   campaign,
   leads,
+  users,
 }: {
   initialSection: string;
   campaign: Campaign;
   leads: LeadRow[];
+  users: PanelUser[];
 }) {
   const [open, setOpen] = useState(true);
   const [dark, setDark] = useState(false);
@@ -184,6 +201,9 @@ export function AdminShell({
         {selected === "teste" && <TestSection settings={campaign.settings} onConfigure={() => choose("pagina")} />}
         {selected === "contador" && <CounterSection key={campaign.settings.updatedAt} settings={campaign.settings} />}
         {selected === "videos" && <VideosSection key={campaign.settings.updatedAt} settings={campaign.settings} />}
+        {selected === "calendario" && (
+          <CalendarSection key={campaign.settings.updatedAt} calendar={campaign.settings.calendar} />
+        )}
         {selected === "cadastros" && <LeadsSection leads={leads} />}
         {selected === "comunidade" && (
           <CommunitySection key={campaign.settings.updatedAt} settings={campaign.settings} />
@@ -192,6 +212,7 @@ export function AdminShell({
         {selected === "rodape" && (
           <FooterAdmin key={campaign.footers.map((item) => item.locale + item.tagline).join("|")} footers={campaign.footers} />
         )}
+        {selected === "usuarios" && <UsersSection key={users.map((user) => user.id + user.email).join("|")} users={users} />}
       </div>
     </div>
   );

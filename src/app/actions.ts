@@ -52,6 +52,10 @@ export async function submitLead(input: LeadInput): Promise<LeadResult> {
         if (!supabaseConfigured) throw error;
       }
     } else if (!supabaseConfigured) {
+      if (process.env.VERCEL) {
+        console.error("Cadastro não gravado.");
+        return { ok: false, error: "server" };
+      }
       await appendLead(lead);
     }
     return { ok: true };

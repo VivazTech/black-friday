@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { adminConfigured, isAdmin } from "@/lib/auth";
-import { getCampaign, listLeads } from "@/lib/campaign";
+import { getCampaign, listLeads, listPanelUsers } from "@/lib/campaign";
+import type { PanelUser } from "@/lib/campaign";
 import type { LeadRow } from "@/lib/schedule";
 import { LoginForm } from "./AdminForms";
 import { AdminShell } from "./ui/AdminShell";
@@ -42,13 +43,14 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
   const params = await searchParams;
   const campaign = await getCampaign();
   let leads: LeadRow[] = [];
+  let users: PanelUser[] = [];
   if (campaign.source === "database") {
     try {
-      leads = await listLeads();
+      [leads, users] = await Promise.all([listLeads(), listPanelUsers()]);
     } catch (error) {
-      console.error("Falha ao listar cadastros:", error);
+      console.error("Falha ao ler o painel:", error);
     }
   }
 
-  return <AdminShell initialSection={params.secao ?? "visao"} campaign={campaign} leads={leads} />;
+  return <AdminShell initialSection={params.secao ?? "visao"} campaign={campaign} leads={leads} users={users} />;
 }

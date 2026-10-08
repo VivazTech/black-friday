@@ -136,6 +136,7 @@ export interface Content {
     monthTitle: (month: string, year: number) => string;
     gridLabel: string;
     dayLabel: (day: number, month: string, year: number) => string;
+    available: string;
     unavailable: string;
     discountLabel: (discount: number) => string;
     soldOut: string;
@@ -163,6 +164,7 @@ export interface Content {
       adultsPerRoom: string;
       roomCapacity: string;
       engineMissing: string;
+      popupBlocked: string;
     };
   };
 }

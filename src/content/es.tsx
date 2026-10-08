@@ -298,6 +298,7 @@ export const es: Content = {
     monthTitle: (month, year) => `${month[0].toUpperCase()}${month.slice(1)} de ${year}`,
     gridLabel: "Fechas disponibles para hospedaje",
     dayLabel: (day, month, year) => `${day} de ${month} de ${year}`,
+    available: "disponible",
     unavailable: "no disponible",
     discountLabel: (discount) => `${discount}% de descuento`,
     soldOut: "Agotado",
@@ -325,6 +326,7 @@ export const es: Content = {
       adultsPerRoom: "Informa al menos un adulto por habitación.",
       roomCapacity: "Cada habitación acomoda hasta cuatro huéspedes en esta vista previa.",
       engineMissing: "Vista previa: el motor de reservas aún no fue conectado.",
+      popupBlocked: "El navegador bloqueó la nueva pestaña. Permite las ventanas emergentes e inténtalo de nuevo.",
     },
   },
 };

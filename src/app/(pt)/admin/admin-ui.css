@@ -330,8 +330,69 @@ th { color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: 0.0
 .logout-form { margin: 0; }
 .logout-form button { width: 100%; }
 
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.color-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, 280px) auto; gap: 12px; align-items: end; }
+.color-control { display: flex; align-items: center; gap: 8px; min-height: 42px; }
+.color-field input[type="color"] {
+  width: 48px;
+  height: 42px;
+  padding: 2px;
+  flex: none;
+  cursor: pointer;
+}
+.color-control i {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  flex: none;
+}
+.color-control span { font-size: 13px; font-weight: 700; letter-spacing: 0.02em; }
+.range-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.file-btn { position: relative; overflow: hidden; cursor: pointer; }
+.file-btn input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.cal-table input[type="date"],
+.cal-table input[type="text"],
+.cal-table td input:not([type="checkbox"]) {
+  width: 100%;
+  min-height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  padding: 6px 8px;
+}
+.niara-link {
+  margin: 0;
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--soft);
+  font-size: 13px;
+  line-height: 1.5;
+  word-break: break-all;
+}
+.month-card { display: flex; flex-direction: column; gap: 8px; }
+.mini-cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.mini-cal span {
+  display: flex;
+  flex-direction: column;
+  min-height: 42px;
+  padding: 4px;
+  border-radius: 8px;
+  background: var(--soft);
+  font-size: 10px;
+  line-height: 1.2;
+}
+.mini-cal .mini-head { min-height: 0; background: transparent; color: var(--muted); font-weight: 700; }
+
 @media (max-width: 1100px) {
-  .stats, .layout, .grid-2 { grid-template-columns: 1fr; }
+  .stats, .layout, .grid-2, .grid-3 { grid-template-columns: 1fr; }
 }
 @media (max-width: 720px) {
   .content { padding: 16px; }

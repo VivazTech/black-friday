@@ -294,6 +294,7 @@ export const pt: Content = {
     monthTitle: (month, year) => `${month[0].toUpperCase()}${month.slice(1)} de ${year}`,
     gridLabel: "Datas disponíveis para hospedagem",
     dayLabel: (day, month, year) => `${day} de ${month} de ${year}`,
+    available: "disponível",
     unavailable: "indisponível",
     discountLabel: (discount) => `${discount}% de desconto`,
     soldOut: "Esgotado",
@@ -321,6 +322,7 @@ export const pt: Content = {
       adultsPerRoom: "Informe ao menos um adulto por quarto.",
       roomCapacity: "Cada quarto acomoda até quatro hóspedes nesta prévia.",
       engineMissing: "Prévia demonstrativa: o motor de reservas ainda não foi conectado.",
+      popupBlocked: "O navegador bloqueou a nova aba. Libere pop-ups e tente de novo.",
     },
   },
 };

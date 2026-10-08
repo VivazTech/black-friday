@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { isAdmin, signIn, signOut } from "@/lib/auth";
+import { sanitizeCalendar } from "@/lib/calendar";
 import { adminCall } from "@/lib/campaign";
 import { isSafeHref, isSafeMediaUrl } from "@/lib/media";
 import { dateTimeLocalToIso } from "@/lib/schedule";
@@ -225,6 +226,32 @@ export async function saveCommunity(_: AdminState, form: FormData): Promise<Admi
   return ok("Links da comunidade atualizados.");
 }
 
+export async function saveCalendar(_: AdminState, form: FormData): Promise<AdminState> {
+  const denied = await gate();
+  if (denied) return denied;
+  let parsed: unknown;
+  try {
+    const raw = form.get("calendar");
+    parsed = JSON.parse(typeof raw === "string" ? raw : "");
+  } catch {
+    return fail("O calendário enviado está inválido.");
+  }
+  const calendar = sanitizeCalendar(parsed);
+  try {
+    await adminCall("admin_patch_settings", { calendar });
+  } catch (error) {
+    console.error("Falha ao salvar o calendário:", error);
+    return fail("Não foi possível salvar o calendário.");
+  }
+  refreshSite();
+  const count = calendar.dailyDiscounts.length;
+  return ok(
+    count > 0
+      ? `Calendário publicado em /vendas-abertas com ${count} data(s).`
+      : "Calendário publicado. Nenhuma data tem desconto; os dias do período ficam disponíveis.",
+  );
+}
+
 export async function saveFooter(_: AdminState, form: FormData): Promise<AdminState> {
   const denied = await gate();
   if (denied) return denied;
@@ -259,6 +286,61 @@ export async function saveFooter(_: AdminState, form: FormData): Promise<AdminSt
   }
   refreshSite();
   return ok(locale === "pt" ? "Rodapé em português atualizado." : "Rodapé em espanhol atualizado.");
+}
+
+const PROTECTED_EMAIL = "admin@pedroriquelme.com.br";
+
+function userFailure(error: unknown, fallback: string): AdminState {
+  const message = error instanceof Error ? error.message : "";
+  if (/nao pode ser editada|nao pode ser removida|reservado/i.test(message)) {
+    return fail("A conta admin@pedroriquelme.com.br não pode ser alterada.");
+  }
+  if (/email ja existe/i.test(message)) return fail("Já existe um acesso com esse e-mail.");
+  if (/email invalido/i.test(message)) return fail("Informe um e-mail válido.");
+  if (/senha invalida/i.test(message)) return fail("A senha precisa ter entre 8 e 72 caracteres.");
+  if (/usuario nao encontrado/i.test(message)) return fail("Esse acesso não foi encontrado.");
+  console.error(fallback, error);
+  return fail(fallback);
+}
+
+export async function savePanelUser(_: AdminState, form: FormData): Promise<AdminState> {
+  const denied = await gate();
+  if (denied) return denied;
+  const id = text(form, "id", 40);
+  const email = text(form, "email", 160).toLowerCase();
+  const password = form.get("senha");
+  const confirm = form.get("confirmar");
+  const nextPassword = typeof password === "string" ? password : "";
+  if (email === PROTECTED_EMAIL) return fail("A conta admin@pedroriquelme.com.br não pode ser alterada.");
+  if (!EMAIL.test(email)) return fail("Informe um e-mail válido.");
+  if (!id && nextPassword.length < 8) return fail("A senha precisa ter entre 8 e 72 caracteres.");
+  if (nextPassword && (nextPassword.length < 8 || nextPassword.length > 72)) {
+    return fail("A senha precisa ter entre 8 e 72 caracteres.");
+  }
+  if (nextPassword !== confirm && (nextPassword || confirm)) return fail("A confirmação da senha não confere.");
+  try {
+    await adminCall("admin_save_user", { id, email, password: nextPassword });
+  } catch (error) {
+    return userFailure(error, id ? "Não foi possível atualizar o acesso." : "Não foi possível criar o acesso.");
+  }
+  refreshSite();
+  return ok(id ? "Acesso atualizado." : "Acesso criado. A pessoa já pode entrar no painel.");
+}
+
+export async function deletePanelUser(_: AdminState, form: FormData): Promise<AdminState> {
+  const denied = await gate();
+  if (denied) return denied;
+  const id = text(form, "id", 40);
+  const email = text(form, "email", 160).toLowerCase();
+  if (!id) return fail("Esse acesso não foi encontrado.");
+  if (email === PROTECTED_EMAIL) return fail("A conta admin@pedroriquelme.com.br não pode ser alterada.");
+  try {
+    await adminCall("admin_delete_user", { id });
+  } catch (error) {
+    return userFailure(error, "Não foi possível remover o acesso.");
+  }
+  refreshSite();
+  return ok("Acesso removido.");
 }
 
 export async function saveFaqs(_: AdminState, form: FormData): Promise<AdminState> {

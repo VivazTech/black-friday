@@ -1,3 +1,4 @@
+import type { CalendarConfig } from "./calendar";
 import type { SiteMode } from "./site";
 
 export interface SiteSettings {
@@ -12,6 +13,7 @@ export interface SiteSettings {
   aquaPosterUrl: string;
   whatsappCommunityPt: string;
   whatsappCommunityEs: string;
+  calendar: CalendarConfig;
   updatedAt: string;
 }
 

@@ -1,20 +1,10 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { getContent, type Content, type Locale } from "@/content";
-import {
-  DISCOUNTS,
-  LAST_MONTH,
-  LAST_STAY_DAY,
-  MAX_NIGHTS,
-  STAY_YEAR,
-  dateAt,
-  fromIso,
-  nightsBetween,
-  offerFor,
-  rangeAvailable,
-  toIso,
-} from "@/lib/offers";
+import { colorFor, inkFor, monthsBetween, periodBounds, type CalendarConfig } from "@/lib/calendar";
+import { niaraUrl } from "@/lib/niara";
+import { MAX_NIGHTS, fromIso, nightsBetween, toIso } from "@/lib/offers";
 
 type GuestKey = "rooms" | "adults" | "children";
 type Guests = Record<GuestKey, number>;
@@ -54,9 +44,19 @@ function PeriodCard({ t, className, checkin, checkout, format, onClear }: Period
   );
 }
 
-export function Booking({ locale }: { locale: Locale }) {
+export function Booking({ locale, calendar }: { locale: Locale; calendar: CalendarConfig }) {
   const content = getContent(locale);
   const t = content.booking;
+  const months = useMemo(
+    () => monthsBetween(calendar.periodStart, calendar.periodEnd),
+    [calendar.periodStart, calendar.periodEnd],
+  );
+  const rates = useMemo(
+    () => new Map(calendar.dailyDiscounts.map((row) => [row.date, row.percentage])),
+    [calendar.dailyDiscounts],
+  );
+  const lastStay = periodBounds(calendar).end;
+  const lastIndex = Math.max(months.length - 1, 0);
   const tripPanel = useRef<HTMLElement>(null);
   const [month, setMonth] = useState(0);
   const [checkin, setCheckin] = useState<string | null>(null);
@@ -83,7 +83,7 @@ export function Booking({ locale }: { locale: Locale }) {
   const selectDate = (value: string) => {
     clearMessages();
     const startsNewPeriod = !checkin || checkout !== null || value <= checkin;
-    if (value === LAST_STAY_DAY && startsNewPeriod) {
+    if (value === lastStay && startsNewPeriod) {
       setCalendarMessage(t.messages.lastDay);
       return;
     }
@@ -93,7 +93,7 @@ export function Booking({ locale }: { locale: Locale }) {
     } else if (nightsBetween(checkin, value) > MAX_NIGHTS) {
       setCalendarMessage(t.messages.maxNights);
       setCheckin(value);
-    } else if (!rangeAvailable(checkin, value)) {
+    } else if (!stayOpen(checkin, value)) {
       setCalendarMessage(t.messages.soldOutInRange);
       setCheckin(value);
     } else {
@@ -134,12 +134,41 @@ export function Booking({ locale }: { locale: Locale }) {
     }
     return true;
   };
-  // O endereço e os parâmetros oficiais do motor de reservas serão configurados depois.
-  const handoffToBookingEngine = () => setBookingMessage(t.messages.engineMissing);
+  const offerForDay = (value: string) => {
+    const percentage = rates.get(value);
+    if (!percentage) return { unavailable: false, discount: null, color: "" };
+    if (percentage === "X") return { unavailable: true, discount: null, color: "" };
+    return { unavailable: false, discount: Number(percentage), color: colorFor(calendar, percentage) };
+  };
+  const stayOpen = (start: string, end: string) => {
+    for (let time = fromIso(start).getTime(); time < fromIso(end).getTime(); time += 86400000) {
+      if (offerForDay(toIso(new Date(time))).unavailable) return false;
+    }
+    return true;
+  };
+  const handoffToBookingEngine = () => {
+    if (!checkin || !checkout) {
+      setBookingMessage(t.messages.engineMissing);
+      return;
+    }
+    const url = niaraUrl({
+      checkIn: checkin,
+      checkOut: checkout,
+      adults: guests.adults,
+      children: guests.children,
+      childAges: ages.slice(0, guests.children),
+      rooms: guests.rooms,
+      promoCode: calendar.promoCode,
+    });
+    const opened = window.open(url, "_blank", "noopener,noreferrer");
+    if (!opened) setBookingMessage(t.messages.popupBlocked);
+  };
 
-  const firstWeekday = dateAt(month, 1).getUTCDay();
-  const daysInMonth = dateAt(month + 1, 0).getUTCDate();
-  const monthName = t.months[month];
+  const view = months[Math.min(month, lastIndex)] ?? { year: 2027, month: 0 };
+  const at = (day: number) => new Date(Date.UTC(view.year, view.month, day, 12));
+  const firstWeekday = at(1).getUTCDay();
+  const daysInMonth = new Date(Date.UTC(view.year, view.month + 1, 0, 12)).getUTCDate();
+  const monthName = t.months[view.month];
   const guestRows = [
     { key: "rooms" as const, label: t.rooms, hint: t.roomsHint },
     { key: "adults" as const, label: t.adults, hint: t.adultsHint },
@@ -156,11 +185,13 @@ export function Booking({ locale }: { locale: Locale }) {
             <p>{t.text}</p>
           </div>
           <div className="discount-legend" aria-label={t.legendLabel}>
-            {DISCOUNTS.map((discount) => (
-              <span key={discount} className={`discount-${discount}`}>
-                {discount}% OFF
-              </span>
-            ))}
+            {calendar.discountColors
+              .filter((item) => item.percentage !== "0")
+              .map((item) => (
+                <span key={item.percentage} style={{ background: item.color, color: inkFor(item.color) }}>
+                  {item.percentage}% OFF
+                </span>
+              ))}
           </div>
         </div>
         <div className="booking-body">
@@ -178,14 +209,14 @@ export function Booking({ locale }: { locale: Locale }) {
                 ←
               </button>
               <h2 id="month-title" aria-live="polite">
-                {t.monthTitle(monthName, STAY_YEAR)}
+                {t.monthTitle(monthName, view.year)}
               </h2>
               <button
                 type="button"
                 id="next-month"
                 className="month-arrow"
                 aria-label={t.nextMonth}
-                disabled={month === LAST_MONTH}
+                disabled={month === lastIndex}
                 onClick={() => setMonth(month + 1)}
               >
                 →
@@ -202,8 +233,8 @@ export function Booking({ locale }: { locale: Locale }) {
               ))}
               {Array.from({ length: daysInMonth }, (_, index) => {
                 const day = index + 1;
-                const value = toIso(dateAt(month, day));
-                const offer = offerFor(value);
+                const value = toIso(at(day));
+                const offer = offerForDay(value);
                 const classes = ["calendar-day"];
                 if (offer.unavailable) classes.push("is-unavailable");
                 if (value === checkin) classes.push("is-selected");
@@ -219,8 +250,8 @@ export function Booking({ locale }: { locale: Locale }) {
                     className={classes.join(" ")}
                     data-date={value}
                     role="gridcell"
-                    aria-label={`${t.dayLabel(day, monthName, STAY_YEAR)}, ${
-                      offer.unavailable ? t.unavailable : t.discountLabel(offer.discount)
+                    aria-label={`${t.dayLabel(day, monthName, view.year)}, ${
+                      offer.unavailable ? t.unavailable : offer.discount == null ? t.available : t.discountLabel(offer.discount)
                     }`}
                     aria-selected={value === checkin || value === checkout ? true : undefined}
                     disabled={offer.unavailable}
@@ -229,14 +260,15 @@ export function Booking({ locale }: { locale: Locale }) {
                     <span>{day}</span>
                     {offer.unavailable ? (
                       <small>{t.soldOut}</small>
-                    ) : (
-                      <span className={`discount-chip discount-${offer.discount}`}>{offer.discount}%</span>
+                    ) : offer.discount == null ? null : (
+                      <span className="discount-chip" style={{ background: offer.color, color: inkFor(offer.color) }}>
+                        {offer.discount}%
+                      </span>
                     )}
                   </button>
                 );
               })}
             </div>
-            <p className="calendar-note">{t.note}</p>
             <p id="calendar-message" className="booking-message" role="status" aria-live="polite">
               {calendarMessage}
             </p>

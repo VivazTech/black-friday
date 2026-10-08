@@ -1,5 +1,6 @@
 import type { Locale } from "@/content";
 import { getContent } from "@/content";
+import { getCampaign } from "@/lib/campaign";
 import { BASE_PATH } from "@/lib/site";
 import { Badges, PatternStrip } from "../Badges";
 import { Booking } from "../Booking";
@@ -14,7 +15,8 @@ interface SalesPageProps {
 }
 
 /** Página de vendas abertas: calendário de datas e descontos. */
-export default function SalesPage({ locale, route }: SalesPageProps) {
+export default async function SalesPage({ locale, route }: SalesPageProps) {
+  const { settings } = await getCampaign();
   return (
     <>
       {/* O sales.css altera seções compartilhadas com a pré-venda, por isso fica fora do bundle
@@ -25,7 +27,7 @@ export default function SalesPage({ locale, route }: SalesPageProps) {
       </a>
       <main id="conteudo">
         <SalesHero locale={locale} route={route} />
-        <Booking locale={locale} />
+        <Booking locale={locale} calendar={settings.calendar} />
         <Badges locale={locale} />
         <PatternStrip />
         <AquaSection locale={locale} variant="sales" />
