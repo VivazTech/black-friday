@@ -392,9 +392,8 @@ export function CommunitySection({ settings }: { settings: SiteSettings }) {
       <section className="panel stack">
         <h2>Comunidades do WhatsApp</h2>
         <p className="hint">
-          O botão aparece embaixo de “acesso antecipado garantido”, só depois que o cadastro é enviado. Na página em
-          português abre o primeiro link. Na página em espanhol abre o segundo. Deixe em branco para esconder o botão
-          daquele idioma.
+          Depois do cadastro, o confete continua e a pessoa é levada ao link deste idioma. Português usa o primeiro.
+          Espanhol usa o segundo. Deixe em branco para não redirecionar.
         </p>
         <label className="field">
           Link em português

@@ -1,20 +1,37 @@
 "use client";
 
 import { useEffect, useRef, useState, useTransition, type FormEvent } from "react";
+import Script from "next/script";
 import { submitLead } from "@/app/actions";
 import { getContent, type Locale } from "@/content";
 import { ConfettiBurst } from "./ConfettiBurst";
 import { formatWhatsapp, isValidWhatsapp, whatsappPlaceholder } from "@/lib/phone";
 
-function WhatsAppIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path
-        fill="currentColor"
-        d="M12.04 2C6.58 2 2.15 6.4 2.15 11.83c0 1.74.46 3.44 1.34 4.94L2 22l5.39-1.41a10 10 0 0 0 4.65 1.14h.01c5.46 0 9.89-4.4 9.89-9.83C21.94 6.4 17.5 2 12.04 2zm0 17.95h-.01a8.3 8.3 0 0 1-4.23-1.16l-.3-.18-3.2.84.86-3.12-.2-.32a8.2 8.2 0 0 1-1.27-4.18c0-4.54 3.72-8.23 8.3-8.23 2.22 0 4.3.86 5.87 2.42a8.18 8.18 0 0 1 2.43 5.81c0 4.54-3.72 8.23-8.25 8.23zm4.54-6.16c-.25-.12-1.47-.72-1.7-.8-.23-.09-.39-.12-.56.12-.16.25-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.12-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.16.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.42h-.48c-.16 0-.43.06-.65.31-.23.25-.86.84-.86 2.05 0 1.21.88 2.38 1 2.54.12.16 1.73 2.64 4.2 3.7.59.25 1.05.4 1.4.51.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.14-1.18-.06-.1-.23-.16-.48-.28z"
-      />
-    </svg>
-  );
+const CRM_BASE = "https://app-3SMNL3WF4K.marketingautomation.services/webforms/receivePostback/MzY0NjAwtLQwAQA/";
+const CRM_ENDPOINT = "afdd2635-e2f2-4f73-a373-1a02243b3211";
+const CRM_SCRIPT = "https://koi-3SMNL3WF4K.marketingautomation.services/client/noform.js?ver=1.24";
+
+type CrmQueue = { push: (command: unknown[]) => void };
+
+declare global {
+  interface Window {
+    __ss_noform?: CrmQueue;
+  }
+}
+
+function crmQueue(): CrmQueue {
+  if (!window.__ss_noform) window.__ss_noform = [] as unknown as CrmQueue;
+  return window.__ss_noform;
+}
+
+function sendLeadToCrm() {
+  const queue = crmQueue();
+  queue.push(["baseURI", CRM_BASE]);
+  queue.push(["endpoint", CRM_ENDPOINT]);
+  queue.push(["submitType", "manual"]);
+  queue.push(["form", "signup-form", CRM_ENDPOINT]);
+  queue.push(["exclude", "site"]);
+  queue.push(["submit", undefined, CRM_ENDPOINT]);
 }
 
 function communityUrl(value: string) {
@@ -32,6 +49,14 @@ function SignupForm({ locale, communityHref }: { locale: Locale; communityHref: 
   const [message, setMessage] = useState<{ text: string; error: boolean } | null>(null);
   const [done, setDone] = useState(false);
   const [pending, startTransition] = useTransition();
+
+  useEffect(() => {
+    if (!done || !communityHref) return;
+    const timer = window.setTimeout(() => {
+      window.location.assign(communityHref);
+    }, 2500);
+    return () => window.clearTimeout(timer);
+  }, [done, communityHref]);
 
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -67,6 +92,7 @@ function SignupForm({ locale, communityHref }: { locale: Locale; communityHref: 
         // Falha de rede: tratada como erro de envio.
       }
       if (ok) {
+        if (!fields.site.value.trim()) sendLeadToCrm();
         form.reset();
         setCountry(t.countries[0].value);
         setDone(true);
@@ -82,12 +108,6 @@ function SignupForm({ locale, communityHref }: { locale: Locale; communityHref: 
         <ConfettiBurst />
         <h3>{t.thanksTitle}</h3>
         <p>{t.success}</p>
-        {communityHref ? (
-          <a className="button community" href={communityHref} target="_blank" rel="noopener noreferrer">
-            <WhatsAppIcon />
-            {t.community}
-          </a>
-        ) : null}
       </div>
     );
   }
@@ -203,6 +223,15 @@ export function SignupSection({ locale, communityHref }: { locale: Locale; commu
 
   return (
     <section className="signup-section" id="cadastro" aria-labelledby="signup-title">
+      <Script id="crm-form-init" strategy="afterInteractive">
+        {`var __ss_noform = __ss_noform || [];
+__ss_noform.push(['baseURI', '${CRM_BASE}']);
+__ss_noform.push(['endpoint', '${CRM_ENDPOINT}']);
+__ss_noform.push(['submitType', 'manual']);
+__ss_noform.push(['form', 'signup-form', '${CRM_ENDPOINT}']);
+__ss_noform.push(['exclude', 'site']);`}
+      </Script>
+      <Script src={CRM_SCRIPT} strategy="afterInteractive" />
       <div ref={card} className={`signup-card wrap reveal${visible ? " visible" : ""}`}>
         <div className="signup-copy">
           <p className="eyebrow">{t.eyebrow}</p>

@@ -1,6 +1,4 @@
-import Image from "next/image";
 import Link from "next/link";
-import brandLeaf from "@/assets/fav-icon-branco.png";
 import { getContent, localePath, type Locale } from "@/content";
 import { getCampaign } from "@/lib/campaign";
 import { Countdown } from "./Countdown";
@@ -22,13 +20,7 @@ export async function Topbar({ locale, variant, route }: TopbarProps) {
 
   return (
     <header className="topbar wrap">
-      <a className="brand" href="#inicio" aria-label={t.topbar.brandLabel}>
-        <Image className="brand-leaf" src={brandLeaf} alt="" priority />
-        <span>
-          <strong>VIVAZ</strong>
-          <small>CATARATAS</small>
-        </span>
-      </a>
+      <a className="brand" href="#inicio" aria-label={t.topbar.brandLabel} />
       <Countdown locale={locale} variant={variant} opening={opening} closing={closing} />
       <div className="header-actions">
         <a className="button button-yellow header-cta" href={sales ? "#calendario" : "#cadastro"}>

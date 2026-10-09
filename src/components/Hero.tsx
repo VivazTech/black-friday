@@ -2,7 +2,6 @@ import Image, { getImageProps } from "next/image";
 import heroDesktop from "@/assets/hero-desktop.jpg";
 import heroMobile from "@/assets/hero-mobile.webp";
 import badgeAnimated from "@/assets/selo-black-friday-animado.webp";
-import badgeStatic from "@/assets/selo-black-friday.webp";
 import { getContent, type Locale } from "@/content";
 import { Badges } from "./Badges";
 import { Topbar } from "./Topbar";
@@ -34,9 +33,10 @@ export function PreSaleHero({ locale }: { locale: Locale }) {
         <div className="hero-offer offer-left">{t.hero.offerLeft}</div>
         <Image
           className="black-badge float"
-          src={badgeStatic}
+          src={badgeAnimated}
           alt={t.hero.badgeAlt}
           sizes="(max-width: 700px) 80vw, 460px"
+          unoptimized
           loading="eager"
         />
         <div className="hero-offer offer-right">{t.hero.offerRight}</div>

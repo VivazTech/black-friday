@@ -67,7 +67,7 @@ const COPY: Record<SectionId, { title: string; text: string }> = {
   cadastros: { title: "Cadastrados", text: "Pessoas que enviaram o formulário da pré-venda." },
   comunidade: {
     title: "Comunidade",
-    text: "Links do botão que aparece depois do cadastro. Um para o português e outro para o espanhol.",
+    text: "Depois do cadastro, a pessoa é levada ao link do idioma da página.",
   },
   duvidas: { title: "Dúvidas frequentes", text: "Perguntas e respostas de cada idioma e de cada página." },
   rodape: { title: "Rodapé", text: "Textos, telefones, endereço e horário de atendimento." },

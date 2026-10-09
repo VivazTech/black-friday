@@ -158,7 +158,7 @@ export const pt: Content = {
     textPreSale: (
       <>
         Na Black Friday Vivaz Cataratas, quem reserva ganha mais:{" "}
-        <b>2 ingressos cortesia para o Aquafoz e 15% off em todos os serviços do Spa Vivaz Cataratas.</b>{" "}
+        <b>2 ingressos cortesia para o Aquafoz e 10% off em todos os serviços do Spa Vivaz Cataratas.</b>{" "}
         Aproveite este benefício exclusivo para duas crianças de até 10 anos e transforme sua estadia em
         uma experiência completa em Foz do Iguaçu.
       </>
