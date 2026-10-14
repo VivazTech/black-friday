@@ -76,6 +76,8 @@ export const es: Content = {
       "Hasta 2 niños de cortesía*",
       "Aquamania en temporada*",
       "2 entradas infantiles*",
+      "10% OFF en el Spa",
+      "50% de entrada y 50% en el check-in",
     ],
   },
   badges: {
@@ -229,7 +231,6 @@ export const es: Content = {
     ],
   },
   faq: {
-    eyebrow: "SIN LETRA CHICA ESCONDIDA",
     title: (
       <>
         Preguntas
@@ -237,16 +238,16 @@ export const es: Content = {
         frecuentes
       </>
     ),
-    introPreSale: "Las reglas más importantes están accesibles antes del registro y antes de la reserva.",
-    introSales: "Consulta las reglas antes de elegir tus fechas y tu habitación.",
     preSale: esFaqs,
     sales: esFaqs,
   },
   finalCta: {
     preSale: {
-      eyebrow: "REGÍSTRATE AHORA",
-      title: "Llega a la semana de ventas listo para elegir tu mejor fecha.",
-      text: "Recibe el acceso anticipado a las ofertas del Black Friday Vivaz Cataratas.",
+      title: (
+        <>
+          <strong>Regístrate ahora</strong> y llega a la semana de ventas listo para elegir tu mejor fecha.
+        </>
+      ),
     },
     sales: { title: "Elige tus fechas y encuentra la mejor oportunidad para tus vacaciones." },
   },

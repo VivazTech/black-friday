@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getContent, localePath, type Locale } from "@/content";
 import { getCampaign } from "@/lib/campaign";
 import { Countdown } from "./Countdown";
+import { StickyBar } from "./StickyBar";
 
 interface TopbarProps {
   locale: Locale;
@@ -20,6 +21,7 @@ export async function Topbar({ locale, variant, route }: TopbarProps) {
 
   return (
     <header className="topbar wrap">
+      <StickyBar locale={locale} variant={variant} route={route} opening={opening} closing={closing} />
       <a className="brand" href="#inicio" aria-label={t.topbar.brandLabel} />
       <Countdown locale={locale} variant={variant} opening={opening} closing={closing} />
       <div className="header-actions">

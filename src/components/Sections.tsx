@@ -2,11 +2,14 @@ import { Fragment } from "react";
 import Image from "next/image";
 import aquaPoster from "@/assets/aqua-poster.webp";
 import footerLogo from "@/assets/footer-logo.png";
+import footerSeals from "@/assets/footer-seals.webp";
 import promoPoster from "@/assets/promo-poster.webp";
 import promoPosterMobile from "@/assets/promo-poster-mobile.webp";
 import { getContent, type Locale } from "@/content";
 import { getCampaign } from "@/lib/campaign";
+import { BASE_PATH } from "@/lib/site";
 import { DEFAULT_AQUA_VIDEO, DEFAULT_PROMO_VIDEO, DEFAULT_PROMO_VIDEO_MOBILE, mediaUrl } from "@/lib/media";
+import { FaqList } from "./FaqList";
 import { LoopVideo, PromoVideo } from "./Videos";
 
 type Variant = "preSale" | "sales";
@@ -118,18 +121,9 @@ export async function FaqSection({ locale, variant }: SectionProps) {
     <section className="faq-section" id="duvidas" aria-labelledby="faq-title">
       <div className="wrap faq-grid">
         <div>
-          <p className="eyebrow">{t.eyebrow}</p>
           <h2 id="faq-title">{t.title}</h2>
-          <p>{sales ? t.introSales : t.introPreSale}</p>
         </div>
-        <div className="faq-list">
-          {items.map((item, index) => (
-            <details key={item.question} open={index === 0}>
-              <summary>{item.question}</summary>
-              <p>{item.answer}</p>
-            </details>
-          ))}
-        </div>
+        <FaqList items={items} />
       </div>
     </section>
   );
@@ -143,21 +137,15 @@ export function FinalCta({ locale, variant }: SectionProps) {
       <div className="wrap">
         {variant === "sales" ? (
           <>
-            <div>
-              <h2>{t.finalCta.sales.title}</h2>
-            </div>
-            <a className="button button-yellow" href="#calendario">
+            <h2>{t.finalCta.sales.title}</h2>
+            <a className="button button-white" href="#calendario">
               {t.cta.dates}
             </a>
           </>
         ) : (
           <>
-            <div>
-              <p className="eyebrow">{t.finalCta.preSale.eyebrow}</p>
-              <h2>{t.finalCta.preSale.title}</h2>
-              <p>{t.finalCta.preSale.text}</p>
-            </div>
-            <a className="button button-yellow" href="#cadastro">
+            <h2>{t.finalCta.preSale.title}</h2>
+            <a className="button button-white" href="#cadastro">
               {t.cta.early}
             </a>
           </>
@@ -175,6 +163,19 @@ function phoneHref(phone: string) {
   const digits = phone.replace(/\D/g, "");
   if (digits.startsWith("0800")) return `tel:${digits}`;
   return `tel:+${digits}`;
+}
+
+const CONTACT_ICONS = {
+  whatsapp: `${BASE_PATH}/icons/whatsapp.svg`,
+  phone: `${BASE_PATH}/icons/phone.svg`,
+  location: `${BASE_PATH}/icons/location.svg`,
+};
+
+function phoneIcon(phone: string) {
+  const digits = phone.replace(/\D/g, "");
+  const national = digits.startsWith("55") ? digits.slice(2) : digits;
+  if (national.startsWith("0800")) return CONTACT_ICONS.phone;
+  return national.slice(2).startsWith("9") ? CONTACT_ICONS.whatsapp : CONTACT_ICONS.phone;
 }
 
 const PRIVACY_HREF = "https://vivazcataratas.com.br/politica-de-privacidade/";
@@ -224,6 +225,7 @@ export async function Footer({ locale }: { locale: Locale }) {
         <div className="footer-brand">
           <Image src={footerLogo} alt={t.logoAlt} />
           <p>{t.tagline}</p>
+          <Image className="footer-seals" src={footerSeals} alt="TripAdvisor e premiação do Vivaz Cataratas" />
         </div>
         <div>
           <h3>{t.resort}</h3>
@@ -234,11 +236,15 @@ export async function Footer({ locale }: { locale: Locale }) {
         <div>
           <h3>{t.contacts}</h3>
           {t.phones.map((phone) => (
-            <a key={phone} href={phoneHref(phone)}>
-              {phone}
+            <a key={phone} className="footer-contact" href={phoneHref(phone)}>
+              <img src={phoneIcon(phone)} alt="" width={15} height={15} />
+              <span>{phone}</span>
             </a>
           ))}
-          <p>{t.address}</p>
+          <p className="footer-contact is-address">
+            <img src={CONTACT_ICONS.location} alt="" width={15} height={15} />
+            <span>{t.address}</span>
+          </p>
         </div>
         <div>
           <h3>{t.service}</h3>

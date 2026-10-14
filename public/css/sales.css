@@ -16,8 +16,8 @@ body{background:var(--black)}
 .sales-hero .hero-main-actions{margin-top:0}
 .booking-section{position:relative;z-index:4;margin-top:-255px;padding:0 0 245px;background:linear-gradient(180deg,transparent 0,#121313 35%,#121313 100%);overflow-anchor:none}
 .booking-section:before,.booking-section:after{content:"";position:absolute;z-index:-1;top:95px;width:456px;height:706px;background:url('../assets/folhas.svg') center/contain no-repeat;opacity:.4;pointer-events:none}
-.booking-section:before{left:0;transform:scaleX(-1)}
-.booking-section:after{right:0}
+.booking-section:before{left:0}
+.booking-section:after{right:0;transform:scaleX(-1)}
 .booking-card{width:min(1168px,calc(100% - 64px));overflow:hidden;border-radius:30px;background:#fff;box-shadow:0 25px 65px #0005}
 .booking-heading{min-height:120px;padding:32px 40px 19px;display:flex;align-items:flex-end;justify-content:space-between;gap:20px;border-bottom:1px solid #e5e5e1}
 .booking-heading h1{font-size:47px;line-height:1;font-weight:400;margin:0 0 8px}

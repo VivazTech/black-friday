@@ -96,15 +96,12 @@ export interface Content {
     items: { text: string; author: string }[];
   };
   faq: {
-    eyebrow: string;
     title: ReactNode;
-    introPreSale: string;
-    introSales: string;
     preSale: Faq[];
     sales: Faq[];
   };
   finalCta: {
-    preSale: { eyebrow: string; title: string; text: string };
+    preSale: { title: ReactNode };
     sales: { title: string };
   };
   footer: {
