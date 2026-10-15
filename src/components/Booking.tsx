@@ -61,8 +61,8 @@ export function Booking({ locale, calendar }: { locale: Locale; calendar: Calend
   const [month, setMonth] = useState(0);
   const [checkin, setCheckin] = useState<string | null>(null);
   const [checkout, setCheckout] = useState<string | null>(null);
-  const [guests, setGuests] = useState<Guests>({ rooms: 1, adults: 1, children: 1 });
-  const [ages, setAges] = useState([5]);
+  const [guests, setGuests] = useState<Guests>({ rooms: 1, adults: 1, children: 0 });
+  const [ages, setAges] = useState<number[]>([]);
   const [calendarMessage, setCalendarMessage] = useState("");
   const [bookingMessage, setBookingMessage] = useState("");
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -103,7 +103,7 @@ export function Booking({ locale, calendar }: { locale: Locale; calendar: Calend
 
   const clearDate = (field: "checkin" | "checkout") => {
     if (field === "checkin") setCheckin(null);
-    setCheckout(null);
+    else setCheckout(null);
     clearMessages();
   };
 
@@ -112,7 +112,7 @@ export function Booking({ locale, calendar }: { locale: Locale; calendar: Calend
     if (key === "rooms" && next.adults < next.rooms) next.adults = next.rooms;
     setGuests(next);
     if (key === "children") {
-      setAges((current) => Array.from({ length: next.children }, (_, index) => current[index] ?? 5));
+      setAges((current) => Array.from({ length: next.children }, (_, index) => current[index] ?? 1));
     }
     setBookingMessage("");
   };
