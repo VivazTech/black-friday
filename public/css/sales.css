@@ -14,7 +14,7 @@ body{background:var(--black)}
 .sales-hero .black-badge img{position:absolute;inset:0;width:100%;height:100%;max-width:none}
 .sales-hero .hero-offer{font-size:30px;padding-top:80px;max-width:390px;text-shadow:0 2px 15px #002c4e}
 .sales-hero .hero-main-actions{margin-top:0}
-.booking-section{position:relative;z-index:4;margin-top:-255px;padding:0 0 245px;background:linear-gradient(180deg,transparent 0,#121313 35%,#121313 100%);overflow-anchor:none}
+.booking-section{position:relative;z-index:4;margin-top:-255px;padding:0 0 80px;background:linear-gradient(180deg,transparent 0,#121313 35%,#121313 100%);overflow-anchor:none}
 .booking-section:before,.booking-section:after{content:"";position:absolute;z-index:-1;top:95px;width:456px;height:706px;background:url('../assets/folhas.svg') center/contain no-repeat;opacity:.4;pointer-events:none}
 .booking-section:before{left:0}
 .booking-section:after{right:0;transform:scaleX(-1)}

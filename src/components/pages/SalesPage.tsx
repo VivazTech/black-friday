@@ -21,7 +21,7 @@ export default async function SalesPage({ locale, route }: SalesPageProps) {
     <>
       {/* O sales.css altera seções compartilhadas com a pré-venda, por isso fica fora do bundle
           global e só é carregado aqui. A precedência o posiciona depois do styles.css. */}
-      <link rel="stylesheet" href={`${BASE_PATH}/css/sales.css?v=2`} precedence="sales" />
+      <link rel="stylesheet" href={`${BASE_PATH}/css/sales.css?v=3`} precedence="sales" />
       <a className="skip-link" href="#conteudo">
         {getContent(locale).skipLink}
       </a>

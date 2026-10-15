@@ -30,7 +30,7 @@ export const pt: Content = {
         começam em:
       </>
     ),
-    beforeSales: "A campanha começa em:",
+    beforeSales: "As vendas abertas terminam em:",
     untilEnd: "As vendas abertas terminam em:",
     ariaOpening: "Contagem regressiva para abertura",
     ariaClosing: "Contagem regressiva para o fim das vendas",

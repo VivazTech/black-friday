@@ -16,6 +16,7 @@ interface StickyBarProps {
 
 export function StickyBar({ locale, variant, route, opening, closing }: StickyBarProps) {
   const t = getContent(locale);
+  const sales = variant === "sales";
   const [visible, setVisible] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -43,20 +44,28 @@ export function StickyBar({ locale, variant, route, opening, closing }: StickyBa
     <div className={`sticky-bar${visible ? " is-visible" : ""}`} aria-hidden={visible ? undefined : true} inert={visible ? undefined : true}>
       <a className="brand" href="#inicio" aria-label={t.topbar.brandLabel} />
       <Countdown locale={locale} variant={variant} opening={opening} closing={closing} />
-      <nav className="lang" aria-label={t.topbar.langLabel}>
-        {(["pt", "es"] as const).map((language) => (
-          <Link
-            key={language}
-            href={localePath(language, route)}
-            className={language === locale ? "active" : undefined}
-            aria-current={language === locale ? "page" : undefined}
-            hrefLang={language === "pt" ? "pt-BR" : "es"}
-            prefetch={false}
-          >
-            {language.toUpperCase()}
-          </Link>
-        ))}
-      </nav>
+      <div className="sticky-actions">
+        <a className="button button-yellow header-cta" href={sales ? "#calendario" : "#cadastro"}>
+          {sales ? t.cta.dates : t.cta.early}
+        </a>
+        <a className="button button-white contact-link" href="#contato">
+          {sales ? t.topbar.support : t.topbar.contact}
+        </a>
+        <nav className="lang" aria-label={t.topbar.langLabel}>
+          {(["pt", "es"] as const).map((language) => (
+            <Link
+              key={language}
+              href={localePath(language, route)}
+              className={language === locale ? "active" : undefined}
+              aria-current={language === locale ? "page" : undefined}
+              hrefLang={language === "pt" ? "pt-BR" : "es"}
+              prefetch={false}
+            >
+              {language.toUpperCase()}
+            </Link>
+          ))}
+        </nav>
+      </div>
     </div>,
     document.body,
   );

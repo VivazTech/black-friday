@@ -30,7 +30,7 @@ export const es: Content = {
         en:
       </>
     ),
-    beforeSales: "La campaña comienza en:",
+    beforeSales: "Las ventas abiertas terminan en:",
     untilEnd: "Las ventas terminan en:",
     ariaOpening: "Cuenta regresiva para la apertura",
     ariaClosing: "Cuenta regresiva para el fin de las ventas",
