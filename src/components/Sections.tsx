@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import Image from "next/image";
 import aquaPoster from "@/assets/aqua-poster.webp";
 import footerLogo from "@/assets/footer-logo.png";
-import footerSeals from "@/assets/footer-seals.webp";
+import footerSeals from "@/assets/footer-seals.jpg";
 import promoPoster from "@/assets/promo-poster.webp";
 import promoPosterMobile from "@/assets/promo-poster-mobile.webp";
 import { getContent, type Locale } from "@/content";

@@ -258,7 +258,7 @@ export const pt: Content = {
     service: "Atendimento",
     hours: (
       <>
-        Segunda a sexta das 8:00 às 21:00
+        Segunda a sexta das 8:00 às 20:00
         <br />
         Sábado das 08h às 18h
         <br />
