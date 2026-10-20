@@ -160,18 +160,18 @@ export async function saveCountdown(_: AdminState, form: FormData): Promise<Admi
   if (denied) return denied;
   const start = dateTimeLocalToIso(text(form, "start", 40));
   const end = dateTimeLocalToIso(text(form, "end", 40));
-  if (!start || !end) return fail("Informe o início e o fim do contador.");
+  if (!start || !end) return fail("Informe a abertura das vendas e o fim das vendas.");
   if (new Date(end).getTime() <= new Date(start).getTime()) {
-    return fail("O fim do contador precisa ser depois do início.");
+    return fail("O fim das vendas precisa ser depois da abertura.");
   }
   try {
     await adminCall("admin_patch_settings", { countdown_start: start, countdown_end: end });
   } catch (error) {
-    console.error("Falha ao salvar o contador:", error);
-    return fail("Não foi possível salvar o contador.");
+    console.error("Falha ao salvar os contadores:", error);
+    return fail("Não foi possível salvar os contadores.");
   }
   refreshSite();
-  return ok("Contador atualizado.");
+  return ok("Contadores atualizados.");
 }
 
 export async function saveVideos(_: AdminState, form: FormData): Promise<AdminState> {
@@ -210,13 +210,17 @@ export async function saveCommunity(_: AdminState, form: FormData): Promise<Admi
   if (denied) return denied;
   const portuguese = communityLink(text(form, "whatsapp_community_pt", 500));
   const spanish = communityLink(text(form, "whatsapp_community_es", 500));
-  if (portuguese === null || spanish === null) {
-    return fail("Use um link https da comunidade, ou deixe o campo em branco.");
+  const formPortuguese = communityLink(text(form, "whatsapp_form_pt", 500));
+  const formSpanish = communityLink(text(form, "whatsapp_form_es", 500));
+  if (portuguese === null || spanish === null || formPortuguese === null || formSpanish === null) {
+    return fail("Use um link https, ou deixe o campo em branco.");
   }
   try {
     await adminCall("admin_patch_settings", {
       whatsapp_community_pt: portuguese,
       whatsapp_community_es: spanish,
+      whatsapp_form_pt: formPortuguese,
+      whatsapp_form_es: formSpanish,
     });
   } catch (error) {
     console.error("Falha ao salvar a comunidade:", error);

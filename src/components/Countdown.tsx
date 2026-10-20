@@ -24,8 +24,8 @@ export function Countdown({
   const t = getContent(locale).countdown;
   // No servidor não há relógio do visitante; os números aparecem após a hidratação.
   const now = useSyncExternalStore(subscribe, currentSecond, noSecond);
-  const beforeSales = now === null || now * 1000 < opening;
-  const target = variant === "preSale" || beforeSales ? opening : closing;
+  // Pré-venda: conta até a abertura. Calendário: conta até o fim das vendas.
+  const target = variant === "preSale" ? opening : closing;
 
   let parts = ["--", "--", "--", "--"];
   if (now !== null) {
@@ -39,13 +39,12 @@ export function Countdown({
     parts = [days, hours, minutes, seconds].map((value) => String(value).padStart(2, "0"));
   }
 
-  const label = variant === "preSale" ? t.preSaleLabel : beforeSales ? t.beforeSales : t.untilEnd;
-  const isClosing = variant === "sales" && !beforeSales;
+  const label = variant === "preSale" ? t.preSaleLabel : t.untilEnd;
 
   return (
     <div className="countdown">
       <span className="countdown-label">{label}</span>
-      <div className="clock" aria-label={isClosing ? t.ariaClosing : t.ariaOpening}>
+      <div className="clock" aria-label={variant === "preSale" ? t.ariaOpening : t.ariaClosing}>
         {parts.map((value, index) => (
           <Fragment key={t.units[index]}>
             {index > 0 && <i>·</i>}

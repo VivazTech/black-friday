@@ -34,16 +34,7 @@ function sendLeadToCrm() {
   queue.push(["submit", undefined, CRM_ENDPOINT]);
 }
 
-function communityUrl(value: string) {
-  try {
-    const url = new URL(value);
-    return url.protocol === "https:" && url.hostname ? url.href : "";
-  } catch {
-    return "";
-  }
-}
-
-function SignupForm({ locale, communityHref }: { locale: Locale; communityHref: string }) {
+function SignupForm({ locale, vipHref }: { locale: Locale; vipHref: string }) {
   const t = getContent(locale).signup;
   const [country, setCountry] = useState(t.countries[0].value);
   const [message, setMessage] = useState<{ text: string; error: boolean } | null>(null);
@@ -51,12 +42,12 @@ function SignupForm({ locale, communityHref }: { locale: Locale; communityHref: 
   const [pending, startTransition] = useTransition();
 
   useEffect(() => {
-    if (!done || !communityHref) return;
+    if (!done || !vipHref) return;
     const timer = window.setTimeout(() => {
-      window.location.assign(communityHref);
+      window.location.assign(vipHref);
     }, 2500);
     return () => window.clearTimeout(timer);
-  }, [done, communityHref]);
+  }, [done, vipHref]);
 
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -201,7 +192,7 @@ function SignupForm({ locale, communityHref }: { locale: Locale; communityHref: 
   );
 }
 
-export function SignupSection({ locale, communityHref }: { locale: Locale; communityHref: string }) {
+export function SignupSection({ locale, vipHref }: { locale: Locale; vipHref: string }) {
   const t = getContent(locale).signup;
   const card = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
@@ -238,7 +229,7 @@ __ss_noform.push(['exclude', 'site']);`}
           <h2 id="signup-title">{t.title}</h2>
           <p>{t.text}</p>
         </div>
-        <SignupForm locale={locale} communityHref={communityUrl(communityHref)} />
+        <SignupForm locale={locale} vipHref={vipHref} />
       </div>
     </section>
   );

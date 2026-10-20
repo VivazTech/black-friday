@@ -36,6 +36,8 @@ function fallbackSettings(): SiteSettings {
     aquaPosterUrl: "",
     whatsappCommunityPt: "",
     whatsappCommunityEs: "",
+    whatsappFormPt: "",
+    whatsappFormEs: "",
     calendar: sanitizeCalendar({}),
     updatedAt: "",
   };
@@ -56,6 +58,8 @@ function mapSettings(row: Record<string, unknown>): SiteSettings {
     aquaPosterUrl: String(row.aqua_poster_url ?? ""),
     whatsappCommunityPt: String(row.whatsapp_community_pt ?? ""),
     whatsappCommunityEs: String(row.whatsapp_community_es ?? ""),
+    whatsappFormPt: String(row.whatsapp_form_pt ?? ""),
+    whatsappFormEs: String(row.whatsapp_form_es ?? ""),
     calendar: sanitizeCalendar(row.calendar),
     updatedAt: String(row.updated_at ?? ""),
   };

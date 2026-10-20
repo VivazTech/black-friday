@@ -100,9 +100,9 @@ export function Dashboard({
             <Clock3 />
           </div>
           <div className="stat-copy">
-            <p className="stat-kicker">Abertura do contador</p>
+            <p className="stat-kicker">Contador do formulário</p>
             <p className="stat-value">{formatDateTime(settings.countdownStart)}</p>
-            <p className="stat-note">Encerra {formatDateTime(settings.countdownEnd)}</p>
+            <p className="stat-note">Calendário até {formatDateTime(settings.countdownEnd)}</p>
           </div>
         </article>
         <article className="panel stat">
@@ -322,21 +322,27 @@ export function CounterSection({ settings }: { settings: SiteSettings }) {
   useSaved(state);
 
   return (
-    <form action={action} className="panel stack">
-      <p className="hint">
-        Antes da abertura, o relógio conta até o início das vendas. Depois disso, conta até o encerramento. Horário de
-        Brasília.
-      </p>
-      <div className="grid-2">
+    <form action={action} className="stack">
+      <section className="panel stack">
+        <h2>Página do formulário (pré-venda)</h2>
+        <p className="hint">
+          Relógio no topo da página de cadastro. Conta até a data de abertura das vendas. Horário de Brasília.
+        </p>
         <label className="field">
-          Início das vendas
+          Abertura das vendas
           <input type="datetime-local" name="start" required defaultValue={isoToDateTimeLocal(settings.countdownStart)} />
         </label>
+      </section>
+      <section className="panel stack">
+        <h2>Página do calendário (vendas abertas)</h2>
+        <p className="hint">
+          Relógio no topo da página com o calendário. Conta até a data final das vendas. Horário de Brasília.
+        </p>
         <label className="field">
-          Fim da campanha
+          Fim das vendas
           <input type="datetime-local" name="end" required defaultValue={isoToDateTimeLocal(settings.countdownEnd)} />
         </label>
-      </div>
+      </section>
       <SaveButton pending={pending} />
       <Message state={state} />
     </form>
@@ -390,13 +396,13 @@ export function CommunitySection({ settings }: { settings: SiteSettings }) {
   return (
     <form action={action} className="stack">
       <section className="panel stack">
-        <h2>Comunidades do WhatsApp</h2>
+        <h2>Links dos botões da LP</h2>
         <p className="hint">
-          Depois do cadastro, o confete continua e a pessoa é levada ao link deste idioma. Português usa o primeiro.
-          Espanhol usa o segundo. Deixe em branco para não redirecionar.
+          Usados pelos botões da landing. Português e espanhol ficam separados. Deixe em branco se ainda não houver
+          destino.
         </p>
         <label className="field">
-          Link em português
+          Botões — português
           <input
             name="whatsapp_community_pt"
             type="url"
@@ -406,12 +412,39 @@ export function CommunitySection({ settings }: { settings: SiteSettings }) {
           />
         </label>
         <label className="field">
-          Link em espanhol
+          Botões — espanhol
           <input
             name="whatsapp_community_es"
             type="url"
             inputMode="url"
             defaultValue={settings.whatsappCommunityEs}
+            placeholder="https://chat.whatsapp.com/..."
+          />
+        </label>
+      </section>
+      <section className="panel stack">
+        <h2>Links do formulário (páginas VIP)</h2>
+        <p className="hint">
+          Depois do cadastro, a pessoa passa por /vip-br (PT) ou /vip-es (ES) para o tracking e só então vai a estes
+          links. Deixe em branco para não redirecionar ao WhatsApp.
+        </p>
+        <label className="field">
+          Formulário — português (/vip-br)
+          <input
+            name="whatsapp_form_pt"
+            type="url"
+            inputMode="url"
+            defaultValue={settings.whatsappFormPt}
+            placeholder="https://chat.whatsapp.com/..."
+          />
+        </label>
+        <label className="field">
+          Formulário — espanhol (/vip-es)
+          <input
+            name="whatsapp_form_es"
+            type="url"
+            inputMode="url"
+            defaultValue={settings.whatsappFormEs}
             placeholder="https://chat.whatsapp.com/..."
           />
         </label>

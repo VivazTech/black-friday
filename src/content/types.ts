@@ -24,7 +24,6 @@ export interface Content {
   };
   countdown: {
     preSaleLabel: ReactNode;
-    beforeSales: string;
     untilEnd: string;
     ariaOpening: string;
     ariaClosing: string;

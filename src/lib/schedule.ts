@@ -13,6 +13,8 @@ export interface SiteSettings {
   aquaPosterUrl: string;
   whatsappCommunityPt: string;
   whatsappCommunityEs: string;
+  whatsappFormPt: string;
+  whatsappFormEs: string;
   calendar: CalendarConfig;
   updatedAt: string;
 }

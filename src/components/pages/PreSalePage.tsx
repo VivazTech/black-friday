@@ -1,6 +1,6 @@
 import type { Locale } from "@/content";
 import { getContent } from "@/content";
-import { getCampaign } from "@/lib/campaign";
+import { BASE_PATH } from "@/lib/site";
 import { PatternStrip } from "../Badges";
 import { Gallery } from "../Gallery";
 import { PreSaleHero } from "../Hero";
@@ -9,8 +9,7 @@ import { SignupSection } from "../Signup";
 
 /** Página de pré-venda: cadastro para acesso antecipado. */
 export default async function PreSalePage({ locale }: { locale: Locale }) {
-  const { settings } = await getCampaign();
-  const communityHref = locale === "es" ? settings.whatsappCommunityEs : settings.whatsappCommunityPt;
+  const vipHref = locale === "es" ? `${BASE_PATH}/vip-es` : `${BASE_PATH}/vip-br`;
 
   return (
     <>
@@ -19,7 +18,7 @@ export default async function PreSalePage({ locale }: { locale: Locale }) {
       </a>
       <main id="conteudo">
         <PreSaleHero locale={locale} />
-        <SignupSection locale={locale} communityHref={communityHref} />
+        <SignupSection locale={locale} vipHref={vipHref} />
         <PatternStrip />
         <HowSection locale={locale} />
         <PatternStrip />

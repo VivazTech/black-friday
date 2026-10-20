@@ -42,7 +42,7 @@ const NAV = [
   { id: "visao", title: "Visão geral", icon: LayoutDashboard },
   { id: "pagina", title: "Página no ar", icon: Monitor },
   { id: "teste", title: "Testar troca", icon: Timer },
-  { id: "contador", title: "Contador", icon: Clock3 },
+  { id: "contador", title: "Contadores", icon: Clock3 },
   { id: "videos", title: "Vídeos", icon: Clapperboard },
   { id: "calendario", title: "Calendário", icon: CalendarDays },
   { id: "cadastros", title: "Cadastrados", icon: Users },
@@ -58,7 +58,10 @@ const COPY: Record<SectionId, { title: string; text: string }> = {
   visao: { title: "Visão geral", text: "O que está no ar e o que entrou pelos formulários." },
   pagina: { title: "Página no ar", text: "Escolha a página principal e a data em que ela troca sozinha." },
   teste: { title: "Testar troca", text: "Simule um horário para ver qual página estaria no ar, sem alterar o site." },
-  contador: { title: "Contador", text: "Datas de abertura e encerramento usadas no relógio do topo." },
+  contador: {
+    title: "Contadores",
+    text: "Um contador para a página do formulário (até a abertura) e outro para a do calendário (até o fim).",
+  },
   videos: { title: "Vídeos", text: "Vídeo da promoção e vídeo em loop do Aquafoz." },
   calendario: {
     title: "Calendário",
@@ -67,7 +70,7 @@ const COPY: Record<SectionId, { title: string; text: string }> = {
   cadastros: { title: "Cadastrados", text: "Pessoas que enviaram o formulário da pré-venda." },
   comunidade: {
     title: "Comunidade",
-    text: "Depois do cadastro, a pessoa é levada ao link do idioma da página.",
+    text: "Links dos botões da LP e links do formulário (via /vip-br e /vip-es).",
   },
   duvidas: { title: "Dúvidas frequentes", text: "Perguntas e respostas de cada idioma e de cada página." },
   rodape: { title: "Rodapé", text: "Textos, telefones, endereço e horário de atendimento." },
