@@ -8,8 +8,11 @@ import { ConfettiBurst } from "./ConfettiBurst";
 import { formatWhatsapp, isValidWhatsapp, whatsappPlaceholder } from "@/lib/phone";
 
 const CRM_BASE = "https://app-3SMNL3WF4K.marketingautomation.services/webforms/receivePostback/MzY0NjAwtLQwAQA/";
-const CRM_ENDPOINT = "afdd2635-e2f2-4f73-a373-1a02243b3211";
 const CRM_SCRIPT = "https://koi-3SMNL3WF4K.marketingautomation.services/client/noform.js?ver=1.24";
+const CRM_ENDPOINT: Record<Locale, string> = {
+  pt: "afdd2635-e2f2-4f73-a373-1a02243b3211",
+  es: "e00306f3-f1f2-4b31-aed3-2134c7d01441",
+};
 
 type CrmQueue = { push: (command: unknown[]) => void };
 
@@ -24,14 +27,15 @@ function crmQueue(): CrmQueue {
   return window.__ss_noform;
 }
 
-function sendLeadToCrm() {
+function sendLeadToCrm(locale: Locale) {
+  const endpoint = CRM_ENDPOINT[locale];
   const queue = crmQueue();
   queue.push(["baseURI", CRM_BASE]);
-  queue.push(["endpoint", CRM_ENDPOINT]);
+  queue.push(["endpoint", endpoint]);
   queue.push(["submitType", "manual"]);
-  queue.push(["form", "signup-form", CRM_ENDPOINT]);
+  queue.push(["form", "signup-form", endpoint]);
   queue.push(["exclude", "site"]);
-  queue.push(["submit", undefined, CRM_ENDPOINT]);
+  queue.push(["submit", undefined, endpoint]);
 }
 
 function SignupForm({ locale, vipHref }: { locale: Locale; vipHref: string }) {
@@ -83,7 +87,7 @@ function SignupForm({ locale, vipHref }: { locale: Locale; vipHref: string }) {
         // Falha de rede: tratada como erro de envio.
       }
       if (ok) {
-        if (!fields.site.value.trim()) sendLeadToCrm();
+        if (!fields.site.value.trim()) sendLeadToCrm(locale);
         form.reset();
         setCountry(t.countries[0].value);
         setDone(true);
@@ -194,6 +198,7 @@ function SignupForm({ locale, vipHref }: { locale: Locale; vipHref: string }) {
 
 export function SignupSection({ locale, vipHref }: { locale: Locale; vipHref: string }) {
   const t = getContent(locale).signup;
+  const endpoint = CRM_ENDPOINT[locale];
   const card = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -214,12 +219,12 @@ export function SignupSection({ locale, vipHref }: { locale: Locale; vipHref: st
 
   return (
     <section className="signup-section" id="cadastro" aria-labelledby="signup-title">
-      <Script id="crm-form-init" strategy="afterInteractive">
+      <Script id={`crm-form-init-${locale}`} strategy="afterInteractive">
         {`var __ss_noform = __ss_noform || [];
 __ss_noform.push(['baseURI', '${CRM_BASE}']);
-__ss_noform.push(['endpoint', '${CRM_ENDPOINT}']);
+__ss_noform.push(['endpoint', '${endpoint}']);
 __ss_noform.push(['submitType', 'manual']);
-__ss_noform.push(['form', 'signup-form', '${CRM_ENDPOINT}']);
+__ss_noform.push(['form', 'signup-form', '${endpoint}']);
 __ss_noform.push(['exclude', 'site']);`}
       </Script>
       <Script src={CRM_SCRIPT} strategy="afterInteractive" />
